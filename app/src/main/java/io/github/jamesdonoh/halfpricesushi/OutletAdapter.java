@@ -10,27 +10,20 @@ import java.util.List;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 
-public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder> {
+class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder> {
 
     private List<Outlet> outletList;
 
-    public class OutletViewHolder extends RecyclerView.ViewHolder {
-        TextView text1, text2;
+    private OnOutletClickListener clickListener;
 
-        public OutletViewHolder(View view) {
-            super(view);
-            text1 = (TextView) view.findViewById(android.R.id.text1);
-            text2 = (TextView) view.findViewById(android.R.id.text2);
-        }
-    }
-
-    public OutletAdapter(List<Outlet> outletList) {
+    OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.outletList = outletList;
+        this.clickListener = clickListener;
     }
 
     @Override
     public OutletViewHolder onCreateViewHolder(ViewGroup parent, int viewGroup) {
-        // Inefficient?
+        // Reuse itemview for efficiency?
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(android.R.layout.simple_list_item_2, parent, false);
 
@@ -42,10 +35,35 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletView
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
         outletViewHolder.text2.setText(outlet.getAddress());
+
+        outletViewHolder.bindClickListener(outlet, clickListener);
     }
 
     @Override
     public int getItemCount() {
         return outletList.size();
+    }
+
+    static class OutletViewHolder extends RecyclerView.ViewHolder {
+        private TextView text1, text2;
+
+        OutletViewHolder(View itemView) {
+            super(itemView);
+            text1 = (TextView) itemView.findViewById(android.R.id.text1);
+            text2 = (TextView) itemView.findViewById(android.R.id.text2);
+        }
+
+        private void bindClickListener(final Outlet outlet,
+                                       final OnOutletClickListener clickListener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    clickListener.onOutletClick(outlet);
+                }
+            });
+        }
+    }
+
+    interface OnOutletClickListener {
+        void onOutletClick(Outlet outlet);
     }
 }

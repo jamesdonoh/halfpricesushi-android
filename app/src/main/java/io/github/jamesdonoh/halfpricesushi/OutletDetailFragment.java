@@ -8,11 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class OutletDetailFragment extends Fragment {
-    private static final String ARG_OUTLET_ID = "outlet_id";
+    // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
+    public final static String OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
 
-    private static final int DEFAULT_OUTLET_ID = 0;
-
-    int mOutletId = DEFAULT_OUTLET_ID;
+    int mOutletId;
 
     /**
      * Convenience static constructor for specifying which outlet ID to display.
@@ -21,7 +20,7 @@ public class OutletDetailFragment extends Fragment {
         OutletDetailFragment fragment = new OutletDetailFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putInt(ARG_OUTLET_ID, outletId);
+        bundle.putInt(OUTLET_ID, outletId);
         fragment.setArguments(bundle);
 
         return fragment;
@@ -33,7 +32,7 @@ public class OutletDetailFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            mOutletId = args.getInt(ARG_OUTLET_ID, DEFAULT_OUTLET_ID);
+            mOutletId = args.getInt(OUTLET_ID);
         }
     }
 

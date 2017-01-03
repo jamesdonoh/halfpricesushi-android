@@ -22,7 +22,9 @@ public class OutletFileLoader {
         for (int i = 0; i < outletData.length(); i++) {
             try {
                 JSONObject item = outletData.getJSONObject(i);
-                Outlet outlet = new Outlet(item.getString("name"), item.getString("id"));
+                Outlet outlet = new Outlet(item.getInt("id"),
+                        item.getString("name"),
+                        null);
                 outletList.add(outlet);
             } catch (JSONException je) {
                 je.printStackTrace();

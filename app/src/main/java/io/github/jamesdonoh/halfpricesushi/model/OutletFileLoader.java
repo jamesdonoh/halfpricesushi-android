@@ -23,7 +23,11 @@ public class OutletFileLoader {
     }
 
     private static Outlet parseJSONOutlet(JSONObject data) throws JSONException {
-        Outlet outlet = new Outlet(data.getInt("id"), data.getString("name"), null);
+        int id = data.getInt("id");
+        String name = data.getString("name");
+        String openingTimes = data.getString("times");
+
+        Outlet outlet = new Outlet(id, name, openingTimes);
 
         return outlet;
     }

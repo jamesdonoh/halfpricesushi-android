@@ -12,6 +12,7 @@ public class OutletDetailsFragment extends Fragment {
     public final static String OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
 
     int mOutletId;
+    String mOutletOpeningTimes;
 
     /**
      * Convenience static constructor for specifying which outlet ID to display.
@@ -33,16 +34,20 @@ public class OutletDetailsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             mOutletId = args.getInt(OUTLET_ID);
+            mOutletOpeningTimes = "blah";
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_outlet_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_outlet_details, container, false);
 
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(Integer.toString(mOutletId));
+
+        TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
+        openingTimes.setText(mOutletOpeningTimes);
 
         return view;
     }

@@ -9,12 +9,12 @@ public class Outlet {
 
     private String name;
 
-    private String address;
+    private String openingTimes;
 
-    public Outlet(int id, String name, String address) {
+    public Outlet(int id, String name, String openingTimes) {
         this.id = id;
         this.name = name;
-        this.address = address;
+        this.openingTimes = openingTimes;
     }
 
     /** The unique numeric identifier of the outlet */
@@ -27,8 +27,8 @@ public class Outlet {
         return name;
     }
 
-    /** The physical address of the outlet */
-    public String getAddress() {
-        return address;
+    /** Information about the opening times of the outlet */
+    public String getOpeningTimes() {
+        return openingTimes;
     }
 }

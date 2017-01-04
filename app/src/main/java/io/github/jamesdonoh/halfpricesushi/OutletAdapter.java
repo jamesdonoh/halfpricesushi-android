@@ -35,7 +35,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     public void onBindViewHolder(OutletViewHolder outletViewHolder, int position) {
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
-        outletViewHolder.text2.setText(outlet.getAddress());
+        outletViewHolder.text2.setText(Integer.toString(outlet.getId()));
 
         outletViewHolder.bindClickListener(outlet, clickListener);
     }

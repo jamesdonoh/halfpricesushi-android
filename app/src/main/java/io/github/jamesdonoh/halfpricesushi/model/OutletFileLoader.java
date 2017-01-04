@@ -17,14 +17,22 @@ import java.util.List;
 public class OutletFileLoader {
     public static List<Outlet> getOutlets(Context context) {
         JSONArray outletData = loadJSONArray(context, "outlets.json");
+        List<Outlet> outletList = parseOutletData(outletData);
 
+        return outletList;
+    }
+
+    private static Outlet parseJSONOutlet(JSONObject data) throws JSONException {
+        Outlet outlet = new Outlet(data.getInt("id"), data.getString("name"), null);
+
+        return outlet;
+    }
+
+    private static List<Outlet> parseOutletData(JSONArray outletData) {
         ArrayList outletList = new ArrayList<Outlet>();
         for (int i = 0; i < outletData.length(); i++) {
             try {
-                JSONObject item = outletData.getJSONObject(i);
-                Outlet outlet = new Outlet(item.getInt("id"),
-                        item.getString("name"),
-                        null);
+                Outlet outlet = parseJSONOutlet(outletData.getJSONObject(i));
                 outletList.add(outlet);
             } catch (JSONException je) {
                 je.printStackTrace();

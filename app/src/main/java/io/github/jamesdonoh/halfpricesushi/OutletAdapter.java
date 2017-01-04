@@ -18,6 +18,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.outletList = outletList;
+        // TODO defend against null clickListener
         this.clickListener = clickListener;
     }
 

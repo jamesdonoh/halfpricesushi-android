@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="io.github.jamesdonoh.halfpricesushi.OutletDetailFragment">
+    tools:context="io.github.jamesdonoh.halfpricesushi.OutletDetailsFragment">
 
     <TextView
         android:id="@+id/name"

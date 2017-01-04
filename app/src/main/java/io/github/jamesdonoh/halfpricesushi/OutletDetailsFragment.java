@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class OutletDetailFragment extends Fragment {
+public class OutletDetailsFragment extends Fragment {
     // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
     public final static String OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
 
@@ -16,8 +16,8 @@ public class OutletDetailFragment extends Fragment {
     /**
      * Convenience static constructor for specifying which outlet ID to display.
      */
-    static OutletDetailFragment newInstance(int outletId) {
-        OutletDetailFragment fragment = new OutletDetailFragment();
+    static OutletDetailsFragment newInstance(int outletId) {
+        OutletDetailsFragment fragment = new OutletDetailsFragment();
 
         Bundle bundle = new Bundle();
         bundle.putInt(OUTLET_ID, outletId);

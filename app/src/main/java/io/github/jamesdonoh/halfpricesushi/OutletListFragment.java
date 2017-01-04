@@ -26,10 +26,10 @@ public class OutletListFragment extends Fragment {
         OutletAdapter outletAdapter = new OutletAdapter(outletList, new OutletAdapter.OnOutletClickListener() {
             @Override public void onOutletClick(Outlet outlet) {
                 Intent intent = new Intent();
-                intent.setClass(getActivity(), OutletDetailActivity.class);
+                intent.setClass(getActivity(), OutletDetailsActivity.class);
 
                 // Pass outlet ID argument to detail activity via intent extra
-                intent.putExtra(OutletDetailFragment.OUTLET_ID, outlet.getId());
+                intent.putExtra(OutletDetailsFragment.OUTLET_ID, outlet.getId());
 
                 startActivity(intent);
             }

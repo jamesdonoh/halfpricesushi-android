@@ -4,9 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class OutletDetailsActivity extends AppCompatActivity {
-    // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
-    public final static String EXTRA_OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,14 +11,17 @@ public class OutletDetailsActivity extends AppCompatActivity {
         // TODO fail fast if we're in landscape mode now
 
         if (savedInstanceState == null) {
+            // Activity is being initialised for first time, so create details fragment
             OutletDetailsFragment detailsFragment = new OutletDetailsFragment();
 
-            // Pass outlet ID from extra on to fragment as argument
+            // Pass outlet ID from extra to fragment as argument
             detailsFragment.setArguments(getIntent().getExtras());
 
-            // Add details fragment to the root view of the activity
+            // Add fragment to the root view of the activity
             int rootViewId = android.R.id.content;
             getSupportFragmentManager().beginTransaction().add(rootViewId, detailsFragment).commit();
+        } else {
+            // Activity is being reinitialised, so superclass takes care of everything for us
         }
     }
 }

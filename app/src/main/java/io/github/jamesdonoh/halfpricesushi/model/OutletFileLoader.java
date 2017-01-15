@@ -33,7 +33,7 @@ public class OutletFileLoader {
     }
 
     private static List<Outlet> parseOutletData(JSONArray outletData) {
-        ArrayList outletList = new ArrayList<Outlet>();
+        ArrayList<Outlet> outletList = new ArrayList<Outlet>();
         for (int i = 0; i < outletData.length(); i++) {
             try {
                 Outlet outlet = parseJSONOutlet(outletData.getJSONObject(i));

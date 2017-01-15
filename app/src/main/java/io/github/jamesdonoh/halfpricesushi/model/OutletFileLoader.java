@@ -17,9 +17,7 @@ import java.util.List;
 public class OutletFileLoader {
     public static List<Outlet> getOutlets(Context context) {
         JSONArray outletData = loadJSONArray(context, "outlets.json");
-        List<Outlet> outletList = parseOutletData(outletData);
-
-        return outletList;
+        return parseOutletData(outletData);
     }
 
     private static Outlet parseJSONOutlet(JSONObject data) throws JSONException {
@@ -27,9 +25,7 @@ public class OutletFileLoader {
         String name = data.getString("name");
         String openingTimes = data.getString("times");
 
-        Outlet outlet = new Outlet(id, name, openingTimes);
-
-        return outlet;
+        return new Outlet(id, name, openingTimes);
     }
 
     private static List<Outlet> parseOutletData(JSONArray outletData) {

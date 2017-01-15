@@ -11,8 +11,9 @@ public class OutletDetailsFragment extends Fragment {
     // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
     public final static String OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
 
-    int mOutletId;
-    String mOutletOpeningTimes;
+    private int mOutletId;
+
+    private String mOutletOpeningTimes;
 
     /**
      * Convenience static constructor for specifying which outlet ID to display.

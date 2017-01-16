@@ -52,4 +52,8 @@ public class OutletDetailsFragment extends Fragment {
 
         return view;
     }
+
+    public int getShownOutletId() {
+        return mOutletId;
+    }
 }

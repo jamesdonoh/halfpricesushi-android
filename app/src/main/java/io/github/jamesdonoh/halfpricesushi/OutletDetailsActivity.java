@@ -1,5 +1,6 @@
 package io.github.jamesdonoh.halfpricesushi;
 
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -8,7 +9,10 @@ public class OutletDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO fail fast if we're in landscape mode now
+        if (getResources().getConfiguration().orientation  == Configuration.ORIENTATION_LANDSCAPE) {
+            finish();
+            return;
+        }
 
         if (savedInstanceState == null) {
             // Activity is being initialised for first time, so create details fragment

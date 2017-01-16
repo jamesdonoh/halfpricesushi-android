@@ -20,8 +20,6 @@ public class OutletDetailsActivity extends AppCompatActivity {
             // Add fragment to the root view of the activity
             int rootViewId = android.R.id.content;
             getSupportFragmentManager().beginTransaction().add(rootViewId, detailsFragment).commit();
-        } else {
-            // Activity is being reinitialised, so superclass takes care of everything for us
         }
     }
 }

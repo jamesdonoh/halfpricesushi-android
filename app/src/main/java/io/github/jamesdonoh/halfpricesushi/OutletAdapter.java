@@ -12,9 +12,9 @@ import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 
 class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder> {
 
-    private List<Outlet> outletList;
+    private final List<Outlet> outletList;
 
-    private OnOutletClickListener clickListener;
+    private final OnOutletClickListener clickListener;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.outletList = outletList;
@@ -46,7 +46,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     }
 
     static class OutletViewHolder extends RecyclerView.ViewHolder {
-        private TextView text1, text2;
+        private final TextView text1, text2;
 
         OutletViewHolder(View itemView) {
             super(itemView);

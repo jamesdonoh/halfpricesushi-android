@@ -5,11 +5,11 @@ package io.github.jamesdonoh.halfpricesushi.model;
  * such as a shop or restaurant.
  */
 public class Outlet {
-    private int id;
+    private final int id;
 
-    private String name;
+    private final String name;
 
-    private String openingTimes;
+    private final String openingTimes;
 
     public Outlet(int id, String name, String openingTimes) {
         this.id = id;

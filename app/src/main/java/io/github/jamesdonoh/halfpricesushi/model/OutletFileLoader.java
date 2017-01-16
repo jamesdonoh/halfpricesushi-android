@@ -43,7 +43,7 @@ public class OutletFileLoader {
         return outletList;
     }
 
-    public static JSONArray loadJSONArray(Context context, String filename) {
+    private static JSONArray loadJSONArray(Context context, String filename) {
         // NB error handling here is probably awful
         try {
             InputStream is = context.getAssets().open(filename);

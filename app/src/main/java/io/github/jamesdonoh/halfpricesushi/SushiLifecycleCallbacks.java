@@ -5,7 +5,7 @@ import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
-public class SushiLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+class SushiLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
     private static final String TAG = "lifecycle";
 
     @Override

@@ -14,14 +14,15 @@ import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletFileLoader;
 
 public class OutletListFragment extends Fragment implements OutletAdapter.OnOutletClickListener {
+    private List<Outlet> outletList;
+
     private boolean mDualPane;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        View detailsFrame = getActivity().findViewById(R.id.details);
-        mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
+        outletList = OutletFileLoader.getOutlets(getContext());
     }
 
     @Override
@@ -31,11 +32,18 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-        List<Outlet> outletList = OutletFileLoader.getOutlets(getContext());
         OutletAdapter outletAdapter = new OutletAdapter(outletList, this);
         recyclerView.setAdapter(outletAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        View detailsFrame = getActivity().findViewById(R.id.details);
+        mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
     }
 
     @Override

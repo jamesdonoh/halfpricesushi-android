@@ -22,7 +22,6 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //outletList = OutletFileLoader.getOutlets(getContext());
         outletList = OutletDatabaseHelper.getInstance(getContext()).getAllOutlets();
     }
 

@@ -25,7 +25,11 @@ public class OutletFileLoader {
         String name = data.getString("name");
         String openingTimes = data.getString("times");
 
-        return new Outlet(id, name, openingTimes);
+        JSONObject location = data.getJSONObject("location");
+        double latitude = location.getDouble("lat");
+        double longitude = location.getDouble("long");
+
+        return new Outlet(id, name, openingTimes, latitude, longitude);
     }
 
     private static List<Outlet> parseOutletData(JSONArray outletData) {

@@ -21,8 +21,10 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + OutletContract.OutletEntry.TABLE_NAME + " (" +
-                    OutletContract.OutletEntry._ID + " INTEGER PRIMARY KEY," +
-                    OutletContract.OutletEntry.COLUMN_NAME_NAME + " TEXT)";
+                    OutletContract.OutletEntry._ID + " INTEGER PRIMARY KEY, " +
+                    OutletContract.OutletEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE + " REAL, " +
+                    OutletContract.OutletEntry.COLUMN_NAME_LATITUDE + " REAL)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + OutletContract.OutletEntry.TABLE_NAME;
@@ -74,7 +76,9 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
 
         String[] projection = {
             OutletContract.OutletEntry._ID,
-            OutletContract.OutletEntry.COLUMN_NAME_NAME
+            OutletContract.OutletEntry.COLUMN_NAME_NAME,
+            OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE,
+            OutletContract.OutletEntry.COLUMN_NAME_LATITUDE
         };
 
         // TODO: Error handling?
@@ -82,7 +86,11 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             int outletId = cursor.getInt(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry._ID));
             String outletName = cursor.getString(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_NAME));
-            Outlet outlet = new Outlet(outletId, outletName, "never");
+
+            double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LATITUDE));
+            double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE));
+
+            Outlet outlet = new Outlet(outletId, outletName, "never", latitude, longitude);
             outlets.add(outlet);
         }
         cursor.close();
@@ -104,6 +112,8 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(OutletContract.OutletEntry._ID, outlet.getId());
             values.put(OutletContract.OutletEntry.COLUMN_NAME_NAME, outlet.getName());
+            values.put(OutletContract.OutletEntry.COLUMN_NAME_LATITUDE, outlet.getLatitude());
+            values.put(OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE, outlet.getLongitude());
 
             db.insertOrThrow(OutletContract.OutletEntry.TABLE_NAME, null, values);
             db.setTransactionSuccessful();

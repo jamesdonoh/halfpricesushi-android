@@ -7,13 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import io.github.jamesdonoh.halfpricesushi.model.Outlet;
+import io.github.jamesdonoh.halfpricesushi.model.OutletDatabaseHelper;
+
 public class OutletDetailsFragment extends Fragment {
     // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
     public final static String OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
 
-    private int mOutletId;
-
-    private String mOutletOpeningTimes;
+    private Outlet mOutlet;
 
     /**
      * Convenience static constructor for specifying which outlet ID to display.
@@ -34,8 +35,8 @@ public class OutletDetailsFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            mOutletId = args.getInt(OUTLET_ID);
-            mOutletOpeningTimes = "blah";
+            int outletId = args.getInt(OUTLET_ID);
+            mOutlet = OutletDatabaseHelper.getInstance(getContext()).getOutletById(outletId);
         }
     }
 
@@ -45,15 +46,21 @@ public class OutletDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_outlet_details, container, false);
 
         TextView name = (TextView) view.findViewById(R.id.name);
-        name.setText(Integer.toString(mOutletId));
+        name.setText(mOutlet.getName());
 
         TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
-        openingTimes.setText(mOutletOpeningTimes);
+        //openingTimes.setText(mOutlet.getOpeningTimes());
+
+        TextView latitude = (TextView) view.findViewById(R.id.latitude);
+        latitude.setText(Double.toString(mOutlet.getLatitude()));
+
+        TextView longitude = (TextView) view.findViewById(R.id.longitude);
+        longitude.setText(Double.toString(mOutlet.getLongitude()));
 
         return view;
     }
 
     public int getShownOutletId() {
-        return mOutletId;
+        return mOutlet.getId();
     }
 }

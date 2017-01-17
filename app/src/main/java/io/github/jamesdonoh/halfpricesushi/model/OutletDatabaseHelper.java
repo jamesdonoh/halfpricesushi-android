@@ -98,6 +98,38 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
         return outlets;
     }
 
+    // NB cache? abstract into separate layer?
+    public Outlet getOutletById(int outletId) {
+        // TODO: Make async as well?
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] projection = {
+                OutletContract.OutletEntry._ID,
+                OutletContract.OutletEntry.COLUMN_NAME_NAME,
+                OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE,
+                OutletContract.OutletEntry.COLUMN_NAME_LATITUDE
+        };
+
+        String selection = OutletContract.OutletEntry._ID + " = ?";
+        String[] selectionArgs = { Integer.toString(outletId) };
+
+        // TODO: Error handling? DRY up? Make this better!
+        Outlet outlet = null;
+        Cursor cursor = db.query(OutletContract.OutletEntry.TABLE_NAME, projection, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            //int outletId = cursor.getInt(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry._ID));
+            String outletName = cursor.getString(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_NAME));
+
+            double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LATITUDE));
+            double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE));
+
+            outlet = new Outlet(outletId, outletName, "never", latitude, longitude);
+        }
+        cursor.close();
+
+        return outlet;
+    }
+
     private void importJsonData(SQLiteDatabase db) {
         Log.i(TAG, "Importing JSON data");
 

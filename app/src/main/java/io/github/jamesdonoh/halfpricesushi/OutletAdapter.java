@@ -1,6 +1,7 @@
 package io.github.jamesdonoh.halfpricesushi;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     private final OnOutletClickListener clickListener;
 
+    private int focusedItem = 0;
+
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.outletList = outletList;
         // TODO defend against null clickListener
@@ -26,7 +29,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     public OutletViewHolder onCreateViewHolder(ViewGroup parent, int viewGroup) {
         // Reuse itemview for efficiency?
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_2, parent, false);
+                .inflate(R.layout.outlet_list_item, parent, false);
 
         return new OutletViewHolder(itemView);
     }
@@ -35,9 +38,14 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     public void onBindViewHolder(OutletViewHolder outletViewHolder, int position) {
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
-        outletViewHolder.text2.setText(Integer.toString(outlet.getId()));
+        //outletViewHolder.text2.setText(Integer.toString(outlet.getId()));
 
-        outletViewHolder.bindClickListener(outlet, clickListener);
+        boolean isSelected = position == focusedItem;
+        Log.d("view", "focusedItem = " + focusedItem + ", position = " + position + " isSelected = " + isSelected);
+        outletViewHolder.itemView.setSelected(isSelected);
+        //outletViewHolder.itemView.setActivated(isSelected);
+
+        outletViewHolder.bindClickListener(outlet);
     }
 
     @Override
@@ -45,19 +53,21 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         return outletList.size();
     }
 
-    static class OutletViewHolder extends RecyclerView.ViewHolder {
-        private final TextView text1, text2;
+    class OutletViewHolder extends RecyclerView.ViewHolder {
+        private final TextView text1;
 
-        OutletViewHolder(View itemView) {
+        private OutletViewHolder(View itemView) {
             super(itemView);
-            text1 = (TextView) itemView.findViewById(android.R.id.text1);
-            text2 = (TextView) itemView.findViewById(android.R.id.text2);
+            text1 = (TextView) itemView.findViewById(R.id.text1);
         }
 
-        private void bindClickListener(final Outlet outlet,
-                                       final OnOutletClickListener clickListener) {
+        private void bindClickListener(final Outlet outlet) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
+                    notifyItemChanged(focusedItem);
+                    focusedItem = getLayoutPosition();
+                    notifyItemChanged(focusedItem);
+
                     clickListener.onOutletClick(outlet);
                 }
             });

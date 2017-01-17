@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
-import io.github.jamesdonoh.halfpricesushi.model.OutletFileLoader;
+import io.github.jamesdonoh.halfpricesushi.model.OutletDatabaseHelper;
 
 public class OutletListFragment extends Fragment implements OutletAdapter.OnOutletClickListener {
     private List<Outlet> outletList;
@@ -22,7 +22,8 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        outletList = OutletFileLoader.getOutlets(getContext());
+        //outletList = OutletFileLoader.getOutlets(getContext());
+        outletList = OutletDatabaseHelper.getInstance(getContext()).getAllOutlets();
     }
 
     @Override

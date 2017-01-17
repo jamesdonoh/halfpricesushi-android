@@ -1,7 +1,6 @@
 package io.github.jamesdonoh.halfpricesushi;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     private final OnOutletClickListener clickListener;
 
-    private int focusedItem = 0;
+    private int selectedItem = 0;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.outletList = outletList;
@@ -38,12 +37,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     public void onBindViewHolder(OutletViewHolder outletViewHolder, int position) {
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
-        //outletViewHolder.text2.setText(Integer.toString(outlet.getId()));
 
-        boolean isSelected = position == focusedItem;
-        Log.d("view", "focusedItem = " + focusedItem + ", position = " + position + " isSelected = " + isSelected);
+        boolean isSelected = position == selectedItem;
         outletViewHolder.itemView.setSelected(isSelected);
-        //outletViewHolder.itemView.setActivated(isSelected);
 
         outletViewHolder.bindClickListener(outlet);
     }
@@ -64,9 +60,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         private void bindClickListener(final Outlet outlet) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    notifyItemChanged(focusedItem);
-                    focusedItem = getLayoutPosition();
-                    notifyItemChanged(focusedItem);
+                    notifyItemChanged(selectedItem);
+                    selectedItem = getLayoutPosition();
+                    notifyItemChanged(selectedItem);
 
                     clickListener.onOutletClick(outlet);
                 }

@@ -5,34 +5,43 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OutletDatabaseHelper extends SQLiteOpenHelper {
+class OutletDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
+    // TODO deal with warning (see below)
     private static OutletDatabaseHelper sInstance;
 
     private static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_NAME = "outlets.db";
 
+    private static class OutletEntry implements BaseColumns {
+        static final String TABLE_NAME = "outlet";
+        static final String COLUMN_NAME_NAME = "name";
+        static final String COLUMN_NAME_LATITUDE= "latitude";
+        static final String COLUMN_NAME_LONGITUDE = "longitude";
+    }
+
     private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + OutletContract.OutletEntry.TABLE_NAME + " (" +
-                    OutletContract.OutletEntry._ID + " INTEGER PRIMARY KEY, " +
-                    OutletContract.OutletEntry.COLUMN_NAME_NAME + " TEXT, " +
-                    OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE + " REAL, " +
-                    OutletContract.OutletEntry.COLUMN_NAME_LATITUDE + " REAL)";
+            "CREATE TABLE " + OutletEntry.TABLE_NAME + " (" +
+                    OutletEntry._ID + " INTEGER PRIMARY KEY, " +
+                    OutletEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    OutletEntry.COLUMN_NAME_LONGITUDE + " REAL, " +
+                    OutletEntry.COLUMN_NAME_LATITUDE + " REAL)";
 
     private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + OutletContract.OutletEntry.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + OutletEntry.TABLE_NAME;
 
     private Context mContext;
 
     // NB singleton pattern to ensure only a single database connection per app
-    public static synchronized OutletDatabaseHelper getInstance(Context context) {
+    static synchronized OutletDatabaseHelper getInstance(Context context) {
         if (sInstance == null) {
             // Use application context to avoid memory leaks, see http://bit.ly/6LRzfx
             sInstance = new OutletDatabaseHelper(context.getApplicationContext());
@@ -67,7 +76,7 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
     }
 
     // TODO: Should this live in a separate class (to hide SQLLiteOpenHelper interface)?
-    public List<Outlet> getAllOutlets() {
+    List<Outlet> getAllOutlets() {
         Log.i(TAG, "getAllOutlets called");
         List<Outlet> outlets = new ArrayList<>();
 
@@ -75,20 +84,20 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] projection = {
-            OutletContract.OutletEntry._ID,
-            OutletContract.OutletEntry.COLUMN_NAME_NAME,
-            OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE,
-            OutletContract.OutletEntry.COLUMN_NAME_LATITUDE
+            OutletEntry._ID,
+            OutletEntry.COLUMN_NAME_NAME,
+            OutletEntry.COLUMN_NAME_LONGITUDE,
+            OutletEntry.COLUMN_NAME_LATITUDE
         };
 
-        // TODO: Error handling?
-        Cursor cursor = db.query(OutletContract.OutletEntry.TABLE_NAME, projection, null, null, null, null, null, null);
+        // TODO: What about error handling?
+        Cursor cursor = db.query(OutletEntry.TABLE_NAME, projection, null, null, null, null, null, null);
         while (cursor.moveToNext()) {
-            int outletId = cursor.getInt(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry._ID));
-            String outletName = cursor.getString(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_NAME));
+            int outletId = cursor.getInt(cursor.getColumnIndexOrThrow(OutletEntry._ID));
+            String outletName = cursor.getString(cursor.getColumnIndexOrThrow(OutletEntry.COLUMN_NAME_NAME));
 
-            double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LATITUDE));
-            double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE));
+            double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletEntry.COLUMN_NAME_LATITUDE));
+            double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletEntry.COLUMN_NAME_LONGITUDE));
 
             Outlet outlet = new Outlet(outletId, outletName, "never", latitude, longitude);
             outlets.add(outlet);
@@ -96,38 +105,6 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return outlets;
-    }
-
-    // NB cache? abstract into separate layer?
-    public Outlet getOutletById(int outletId) {
-        // TODO: Make async as well?
-        SQLiteDatabase db = getReadableDatabase();
-
-        String[] projection = {
-                OutletContract.OutletEntry._ID,
-                OutletContract.OutletEntry.COLUMN_NAME_NAME,
-                OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE,
-                OutletContract.OutletEntry.COLUMN_NAME_LATITUDE
-        };
-
-        String selection = OutletContract.OutletEntry._ID + " = ?";
-        String[] selectionArgs = { Integer.toString(outletId) };
-
-        // TODO: Error handling? DRY up? Make this better!
-        Outlet outlet = null;
-        Cursor cursor = db.query(OutletContract.OutletEntry.TABLE_NAME, projection, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            //int outletId = cursor.getInt(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry._ID));
-            String outletName = cursor.getString(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_NAME));
-
-            double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LATITUDE));
-            double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE));
-
-            outlet = new Outlet(outletId, outletName, "never", latitude, longitude);
-        }
-        cursor.close();
-
-        return outlet;
     }
 
     private void importJsonData(SQLiteDatabase db) {
@@ -142,12 +119,12 @@ public class OutletDatabaseHelper extends SQLiteOpenHelper {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
-            values.put(OutletContract.OutletEntry._ID, outlet.getId());
-            values.put(OutletContract.OutletEntry.COLUMN_NAME_NAME, outlet.getName());
-            values.put(OutletContract.OutletEntry.COLUMN_NAME_LATITUDE, outlet.getLatitude());
-            values.put(OutletContract.OutletEntry.COLUMN_NAME_LONGITUDE, outlet.getLongitude());
+            values.put(OutletEntry._ID, outlet.getId());
+            values.put(OutletEntry.COLUMN_NAME_NAME, outlet.getName());
+            values.put(OutletEntry.COLUMN_NAME_LATITUDE, outlet.getLatitude());
+            values.put(OutletEntry.COLUMN_NAME_LONGITUDE, outlet.getLongitude());
 
-            db.insertOrThrow(OutletContract.OutletEntry.TABLE_NAME, null, values);
+            db.insertOrThrow(OutletEntry.TABLE_NAME, null, values);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();

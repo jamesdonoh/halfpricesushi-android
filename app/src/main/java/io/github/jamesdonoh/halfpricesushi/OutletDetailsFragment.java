@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
-import io.github.jamesdonoh.halfpricesushi.model.OutletDatabaseHelper;
+import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
 public class OutletDetailsFragment extends Fragment {
     // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
@@ -36,7 +36,7 @@ public class OutletDetailsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             int outletId = args.getInt(OUTLET_ID);
-            mOutlet = OutletDatabaseHelper.getInstance(getContext()).getOutletById(outletId);
+            mOutlet = OutletStore.getOutletById(getContext(), outletId);
         }
     }
 

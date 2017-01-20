@@ -16,17 +16,15 @@ import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 public class OutletListFragment extends Fragment implements OutletAdapter.OnOutletClickListener {
     private final static String SELECTED_OUTLET_ID = "selectedOutlet";
 
-    private List<Outlet> mOutletList;
+    private final static int NONE = -1;
 
     private boolean mDualPane;
 
-    private int mSelectedOutletId;
+    private int mSelectedOutletId = NONE;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mOutletList = OutletStore.getAllOutlets(getContext());
 
         if (savedInstanceState != null) {
             mSelectedOutletId = savedInstanceState.getInt(SELECTED_OUTLET_ID);
@@ -40,7 +38,9 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
+        List<Outlet> mOutletList = OutletStore.getAllOutlets(getContext());
         OutletAdapter mOutletAdapter = new OutletAdapter(mOutletList, this);
+
         recyclerView.setAdapter(mOutletAdapter);
 
         return view;
@@ -53,7 +53,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         View detailsFrame = getActivity().findViewById(R.id.details);
         mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 
-        if (mDualPane) {
+        if (mDualPane && mSelectedOutletId != NONE) {
             showOutletDetails(mSelectedOutletId);
         }
     }

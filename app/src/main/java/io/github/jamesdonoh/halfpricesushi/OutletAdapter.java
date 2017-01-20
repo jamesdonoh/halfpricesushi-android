@@ -65,7 +65,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     notifyItemChanged(selectedItemIndex);
-                    selectedItemIndex = getLayoutPosition();
+                    selectedItemIndex = getAdapterPosition();
                     notifyItemChanged(selectedItemIndex);
 
                     clickListener.onOutletClick(outlet);

@@ -16,14 +16,13 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     private final OnOutletClickListener clickListener;
 
-    private boolean showSelection = true;
-
-    private int selectedItemIndex = 0;
+    private int selectedOutletPosition = RecyclerView.NO_POSITION;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.outletList = outletList;
         // TODO defend against null clickListener
         this.clickListener = clickListener;
+
         setHasStableIds(true);
     }
 
@@ -46,10 +45,8 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
 
-        if (showSelection) {
-            boolean isSelected = position == selectedItemIndex;
-            outletViewHolder.itemView.setSelected(isSelected);
-        }
+        boolean isSelected = (position == selectedOutletPosition);
+        outletViewHolder.itemView.setSelected(isSelected);
 
         outletViewHolder.bindClickListener(outlet);
     }
@@ -70,10 +67,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         private void bindClickListener(final Outlet outlet) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    notifyItemChanged(selectedItemIndex);
-                    selectedItemIndex = getAdapterPosition();
-                    notifyItemChanged(selectedItemIndex);
-
+                    setSelectedOutletPosition(getLayoutPosition());
                     clickListener.onOutletClick(outlet);
                 }
             });
@@ -82,5 +76,11 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     interface OnOutletClickListener {
         void onOutletClick(Outlet outlet);
+    }
+
+    private void setSelectedOutletPosition(int newPosition) {
+        notifyItemChanged(selectedOutletPosition);
+        selectedOutletPosition = newPosition;
+        notifyItemChanged(selectedOutletPosition);
     }
 }

@@ -14,15 +14,23 @@ import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
 public class OutletListFragment extends Fragment implements OutletAdapter.OnOutletClickListener {
-    private List<Outlet> outletList;
+    private final static String SELECTED_OUTLET_ID = "selectedOutlet";
+
+    private List<Outlet> mOutletList;
 
     private boolean mDualPane;
+
+    private int mSelectedOutletId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        outletList = OutletStore.getAllOutlets(getContext());
+        mOutletList = OutletStore.getAllOutlets(getContext());
+
+        if (savedInstanceState != null) {
+            mSelectedOutletId = savedInstanceState.getInt(SELECTED_OUTLET_ID);
+        }
     }
 
     @Override
@@ -32,8 +40,8 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-        OutletAdapter outletAdapter = new OutletAdapter(outletList, this);
-        recyclerView.setAdapter(outletAdapter);
+        OutletAdapter mOutletAdapter = new OutletAdapter(mOutletList, this);
+        recyclerView.setAdapter(mOutletAdapter);
 
         return view;
     }
@@ -44,16 +52,32 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
         View detailsFrame = getActivity().findViewById(R.id.details);
         mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
+
+        if (mDualPane) {
+            showOutletDetails(mSelectedOutletId);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SELECTED_OUTLET_ID, mSelectedOutletId);
     }
 
     @Override
     public void onOutletClick(Outlet outlet) {
+        showOutletDetails(outlet.getId());
+    }
+
+    private void showOutletDetails(int outletId) {
+        mSelectedOutletId = outletId;
+
         if (mDualPane) {
             OutletDetailsFragment details = (OutletDetailsFragment)
                     getFragmentManager().findFragmentById(R.id.details);
 
-            if (details == null || details.getShownOutletId() != outlet.getId()) {
-                details = OutletDetailsFragment.newInstance(outlet.getId());
+            if (details == null || details.getShownOutletId() != outletId) {
+                details = OutletDetailsFragment.newInstance(outletId);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.details, details)
                         .commit();
@@ -63,7 +87,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
             intent.setClass(getActivity(), OutletDetailsActivity.class);
 
             // Pass outlet ID argument to detail activity via intent extra
-            intent.putExtra(OutletDetailsFragment.OUTLET_ID, outlet.getId());
+            intent.putExtra(OutletDetailsFragment.OUTLET_ID, outletId);
 
             startActivity(intent);
         }

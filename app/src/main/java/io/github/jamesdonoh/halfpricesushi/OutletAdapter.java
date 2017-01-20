@@ -16,7 +16,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     private final OnOutletClickListener clickListener;
 
-    private int selectedItem = 0;
+    private boolean showSelection = true;
+
+    private int selectedItemIndex = 0;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.outletList = outletList;
@@ -38,8 +40,10 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
 
-        boolean isSelected = position == selectedItem;
-        outletViewHolder.itemView.setSelected(isSelected);
+        if (showSelection) {
+            boolean isSelected = position == selectedItemIndex;
+            outletViewHolder.itemView.setSelected(isSelected);
+        }
 
         outletViewHolder.bindClickListener(outlet);
     }
@@ -60,9 +64,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         private void bindClickListener(final Outlet outlet) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    notifyItemChanged(selectedItem);
-                    selectedItem = getLayoutPosition();
-                    notifyItemChanged(selectedItem);
+                    notifyItemChanged(selectedItemIndex);
+                    selectedItemIndex = getLayoutPosition();
+                    notifyItemChanged(selectedItemIndex);
 
                     clickListener.onOutletClick(outlet);
                 }

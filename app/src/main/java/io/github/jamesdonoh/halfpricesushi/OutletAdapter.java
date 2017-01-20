@@ -24,6 +24,12 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         this.outletList = outletList;
         // TODO defend against null clickListener
         this.clickListener = clickListener;
+        setHasStableIds(true);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return outletList.get(position).getId();
     }
 
     @Override

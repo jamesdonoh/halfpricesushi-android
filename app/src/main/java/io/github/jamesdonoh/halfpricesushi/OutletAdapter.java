@@ -45,6 +45,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     public void onBindViewHolder(OutletViewHolder outletViewHolder, int position) {
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
+        outletViewHolder.text2.setText(getDistanceTo(outlet));
 
         boolean isSelected = (position == selectedOutletPosition);
         outletViewHolder.itemView.setSelected(isSelected);
@@ -65,9 +66,12 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     class OutletViewHolder extends RecyclerView.ViewHolder {
         private final TextView text1;
 
+        private final TextView text2;
+
         private OutletViewHolder(View itemView) {
             super(itemView);
             text1 = (TextView) itemView.findViewById(R.id.text1);
+            text2 = (TextView) itemView.findViewById(R.id.text2);
         }
 
         private void bindClickListener(final Outlet outlet) {
@@ -102,5 +106,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         }
 
         throw new IllegalArgumentException("Outlet " + outletId + " not found in adapter list");
+    }
+
+    private String getDistanceTo(Outlet outlet) {
+        return "139m";
     }
 }

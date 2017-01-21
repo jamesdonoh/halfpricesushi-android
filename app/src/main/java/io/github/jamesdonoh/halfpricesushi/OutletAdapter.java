@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -45,7 +47,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     public void onBindViewHolder(OutletViewHolder outletViewHolder, int position) {
         Outlet outlet = outletList.get(position);
         outletViewHolder.text1.setText(outlet.getName());
-        outletViewHolder.text2.setText(getDistanceTo(outlet));
+        outletViewHolder.text2.setText(getFormattedDistanceToOutlet(outlet));
 
         boolean isSelected = (position == selectedOutletPosition);
         outletViewHolder.itemView.setSelected(isSelected);
@@ -108,7 +110,16 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         throw new IllegalArgumentException("Outlet " + outletId + " not found in adapter list");
     }
 
-    private String getDistanceTo(Outlet outlet) {
-        return "139m";
+    private String getFormattedDistanceToOutlet(Outlet outlet) {
+        float metres = (float)getMetresTo(outlet);
+        DecimalFormat df = new DecimalFormat("#.#");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        String kmStr = df.format(metres / 1000);
+
+        return kmStr + "km";
+    }
+
+    private int getMetresTo(Outlet outlet) {
+        return outlet.getName().length() * 139;
     }
 }

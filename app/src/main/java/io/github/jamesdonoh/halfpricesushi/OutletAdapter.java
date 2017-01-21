@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 
@@ -56,6 +57,11 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         return outletList.size();
     }
 
+    public void setSelectedOutletId(int outletId) {
+        int outletPosition = getPositionForOutlet(outletId);
+        setSelectedOutletPosition(outletPosition);
+    }
+
     class OutletViewHolder extends RecyclerView.ViewHolder {
         private final TextView text1;
 
@@ -67,7 +73,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         private void bindClickListener(final Outlet outlet) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    setSelectedOutletPosition(getLayoutPosition());
+                    //setSelectedOutletPosition(getLayoutPosition());
                     clickListener.onOutletClick(outlet);
                 }
             });
@@ -82,5 +88,19 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         notifyItemChanged(selectedOutletPosition);
         selectedOutletPosition = newPosition;
         notifyItemChanged(selectedOutletPosition);
+    }
+
+    // Inefficient; revisit/delete once sorting has been implemented as it will have to change anyway
+    private int getPositionForOutlet(int outletId) {
+        ListIterator<Outlet> iterator = outletList.listIterator();
+        while (iterator.hasNext()) {
+            int index = iterator.nextIndex();
+            Outlet outlet = iterator.next();
+            if (outlet.getId() == outletId) {
+                return index;
+            }
+        }
+
+        throw new IllegalArgumentException("Outlet " + outletId + " not found in adapter list");
     }
 }

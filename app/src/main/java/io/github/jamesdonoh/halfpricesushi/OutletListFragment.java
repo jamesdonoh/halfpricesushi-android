@@ -7,12 +7,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import java.util.List;
-
-import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
 public class OutletListFragment extends Fragment implements OutletAdapter.OnOutletClickListener {
@@ -30,6 +31,9 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("OutletListFragment", "onCreate(" + (savedInstanceState != null ? "Bundle" : "") + ")");
+
+        // This fragment would like to participate in populating the options menu
+        setHasOptionsMenu(true);
 
         if (savedInstanceState != null) {
             mSelectedOutletId = savedInstanceState.getInt(SELECTED_OUTLET_ID);
@@ -76,6 +80,26 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         super.onSaveInstanceState(outState);
         Log.d("OutletListFragment", "onSaveInstanceState: persisting selected ID = " + mSelectedOutletId);
         outState.putInt(SELECTED_OUTLET_ID, mSelectedOutletId);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_outlet_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toggle_sort:
+                // User chose the toggle sort button
+                Toast.makeText(getContext(), R.string.sort_toggle, Toast.LENGTH_SHORT).show();
+                return true;
+
+            default:
+                // Action not recognized so pass to superclass
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

@@ -8,21 +8,44 @@ import android.widget.TextView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 
 class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder> {
+    private final List<Outlet> sortedOutlets;
 
-    private final List<Outlet> outletList;
+    // TODO: move the sorting stuff somewhere else?
+    private Comparator<Outlet> mSortOrder = NAME_ORDER;
+
+    private final static Comparator<Outlet> NAME_ORDER = new Comparator<Outlet>() {
+        @Override
+        public int compare(Outlet o1, Outlet o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
+
+    private final static Comparator<Outlet> DISTANCE_ORDER = new Comparator<Outlet>() {
+        @Override
+        public int compare(Outlet o1, Outlet o2) {
+            int o1m = getMetresTo(o1);
+            int o2m = getMetresTo(o2);
+
+            return o1m > o2m ? 1 : o1m < o2m ? -1 : 0;
+        }
+    };
 
     private final OnOutletClickListener clickListener;
 
     private int selectedOutletPosition = RecyclerView.NO_POSITION;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
-        this.outletList = outletList;
+        this.sortedOutlets = outletList;
+        sortOutlets();
+
         // TODO defend against null clickListener
         this.clickListener = clickListener;
 
@@ -32,7 +55,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     @Override
     public long getItemId(int position) {
-        return outletList.get(position).getId();
+        return sortedOutlets.get(position).getId();
     }
 
     @Override
@@ -46,7 +69,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     @Override
     public void onBindViewHolder(OutletViewHolder outletViewHolder, int position) {
-        Outlet outlet = outletList.get(position);
+        Outlet outlet = sortedOutlets.get(position);
         outletViewHolder.text1.setText(outlet.getName());
         outletViewHolder.text2.setText(getFormattedDistanceToOutlet(outlet));
 
@@ -56,12 +79,28 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     @Override
     public int getItemCount() {
-        return outletList.size();
+        return sortedOutlets.size();
     }
 
-    public void setSelectedOutletId(int outletId) {
+    void setSelectedOutletId(int outletId) {
         int outletPosition = getPositionForOutlet(outletId);
         setSelectedOutletPosition(outletPosition);
+    }
+
+    void toggleSortOrder() {
+        if (mSortOrder == DISTANCE_ORDER) {
+            mSortOrder = NAME_ORDER;
+        } else {
+            mSortOrder = DISTANCE_ORDER;
+        }
+
+        sortOutlets();
+    }
+
+    private void sortOutlets() {
+        // TODO optimise? also diff changes to allow for more efficient UI updates?
+        Collections.sort(sortedOutlets, mSortOrder);
+        notifyDataSetChanged();
     }
 
     class OutletViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -81,7 +120,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         @Override public void onClick(View v) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) { // Ensure item has not been removed
-                Outlet outlet = outletList.get(position);
+                Outlet outlet = sortedOutlets.get(position);
                 clickListener.onOutletClick(outlet.getId());
             }
         }
@@ -99,7 +138,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     // Inefficient; revisit/delete once sorting has been implemented as it will have to change anyway
     private int getPositionForOutlet(int outletId) {
-        ListIterator<Outlet> iterator = outletList.listIterator();
+        ListIterator<Outlet> iterator = sortedOutlets.listIterator();
         while (iterator.hasNext()) {
             int index = iterator.nextIndex();
             Outlet outlet = iterator.next();
@@ -111,7 +150,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         throw new IllegalArgumentException("Outlet " + outletId + " not found in adapter list");
     }
 
-    private String getFormattedDistanceToOutlet(Outlet outlet) {
+    private static String getFormattedDistanceToOutlet(Outlet outlet) {
         float metres = (float)getMetresTo(outlet);
         DecimalFormat df = new DecimalFormat("#.#");
         df.setRoundingMode(RoundingMode.HALF_UP);
@@ -120,7 +159,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         return kmStr + "km";
     }
 
-    private int getMetresTo(Outlet outlet) {
+    private static int getMetresTo(Outlet outlet) {
         return outlet.getName().length() * 139;
     }
 }

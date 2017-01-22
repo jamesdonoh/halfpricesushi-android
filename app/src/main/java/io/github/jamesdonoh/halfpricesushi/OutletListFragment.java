@@ -94,6 +94,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
             case R.id.toggle_sort:
                 // User chose the toggle sort button
                 Toast.makeText(getContext(), R.string.sort_toggle, Toast.LENGTH_SHORT).show();
+                mOutletAdapter.toggleSortOrder();
                 return true;
 
             default:

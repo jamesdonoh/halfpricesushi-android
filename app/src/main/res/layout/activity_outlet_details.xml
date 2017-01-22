@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <fragment android:name="io.github.jamesdonoh.halfpricesushi.OutletListFragment"
-        android:id="@+id/list"
+    <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 </LinearLayout>

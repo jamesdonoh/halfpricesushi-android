@@ -3,6 +3,7 @@ package io.github.jamesdonoh.halfpricesushi;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,10 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
         // Optimisation: RecyclerView size does not depend on adapter contents
         recyclerView.setHasFixedSize(true);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         mOutletAdapter = new OutletAdapter(OutletStore.getAllOutlets(getContext()), this);
         recyclerView.setAdapter(mOutletAdapter);

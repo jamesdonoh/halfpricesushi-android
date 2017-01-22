@@ -26,7 +26,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         // TODO defend against null clickListener
         this.clickListener = clickListener;
 
-        // Optimisation: each item has a unique key (see getItemId)
+        // Optimisation: each item has a unique key (see #getItemId)
         setHasStableIds(true);
     }
 
@@ -52,8 +52,6 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
         boolean isSelected = (position == selectedOutletPosition);
         outletViewHolder.itemView.setSelected(isSelected);
-
-        outletViewHolder.bindClickListener(outlet);
     }
 
     @Override
@@ -66,29 +64,31 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         setSelectedOutletPosition(outletPosition);
     }
 
-    class OutletViewHolder extends RecyclerView.ViewHolder {
+    class OutletViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView text1;
 
         private final TextView text2;
 
         private OutletViewHolder(View itemView) {
             super(itemView);
+
             text1 = (TextView) itemView.findViewById(R.id.text1);
             text2 = (TextView) itemView.findViewById(R.id.text2);
+
+            itemView.setOnClickListener(this);
         }
 
-        private void bindClickListener(final Outlet outlet) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    //setSelectedOutletPosition(getLayoutPosition());
-                    clickListener.onOutletClick(outlet);
-                }
-            });
+        @Override public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) { // Ensure item has not been removed
+                Outlet outlet = outletList.get(position);
+                clickListener.onOutletClick(outlet.getId());
+            }
         }
     }
 
     interface OnOutletClickListener {
-        void onOutletClick(Outlet outlet);
+        void onOutletClick(int outletId);
     }
 
     private void setSelectedOutletPosition(int newPosition) {

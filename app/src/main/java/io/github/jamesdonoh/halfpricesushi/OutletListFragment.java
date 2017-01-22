@@ -74,8 +74,8 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     }
 
     @Override
-    public void onOutletClick(Outlet outlet) {
-        showOutletDetails(outlet.getId());
+    public void onOutletClick(int outletId) {
+        showOutletDetails(outletId);
     }
 
     private void showOutletDetails(int outletId) {

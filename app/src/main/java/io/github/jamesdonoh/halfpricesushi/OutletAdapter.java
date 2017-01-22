@@ -26,6 +26,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         // TODO defend against null clickListener
         this.clickListener = clickListener;
 
+        // Optimisation: each item has a unique key (see getItemId)
         setHasStableIds(true);
     }
 

@@ -43,6 +43,10 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         View view = inflater.inflate(R.layout.fragment_outlet_list, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+
+        // Optimisation: RecyclerView size does not depend on adapter contents
+        recyclerView.setHasFixedSize(true);
+
         mOutletAdapter = new OutletAdapter(OutletStore.getAllOutlets(getContext()), this);
         recyclerView.setAdapter(mOutletAdapter);
 

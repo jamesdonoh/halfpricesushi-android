@@ -81,8 +81,15 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("OutletDetailsFragment", "onMapReady");
-        LatLng sydney = new LatLng(-33.852, 151.211);
-        googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        LatLng position = getPosition();
+        String title = mOutlet.getName();
+
+        googleMap.addMarker(new MarkerOptions().position(position).title(title));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+    }
+
+    private LatLng getPosition() {
+        return new LatLng(mOutlet.getLatitude(), mOutlet.getLongitude());
     }
 }

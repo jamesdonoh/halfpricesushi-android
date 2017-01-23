@@ -56,10 +56,6 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(mOutlet.getName());
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
         /*
         TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
         openingTimes.setText(mOutlet.getOpeningTimes());
@@ -72,6 +68,13 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         */
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     public int getShownOutletId() {

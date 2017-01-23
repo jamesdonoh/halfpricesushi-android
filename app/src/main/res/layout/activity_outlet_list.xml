@@ -12,7 +12,6 @@
 
     <include
         layout="@layout/outlet_list_tabs"
-        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

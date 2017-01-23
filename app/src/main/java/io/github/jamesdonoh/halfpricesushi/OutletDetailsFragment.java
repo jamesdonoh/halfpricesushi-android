@@ -2,15 +2,23 @@ package io.github.jamesdonoh.halfpricesushi;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
-public class OutletDetailsFragment extends Fragment {
+public class OutletDetailsFragment extends Fragment implements OnMapReadyCallback {
     // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
     public final static String OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
 
@@ -48,6 +56,10 @@ public class OutletDetailsFragment extends Fragment {
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(mOutlet.getName());
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         /*
         TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
         openingTimes.setText(mOutlet.getOpeningTimes());
@@ -64,5 +76,13 @@ public class OutletDetailsFragment extends Fragment {
 
     public int getShownOutletId() {
         return mOutlet.getId();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.d("OutletDetailsFragment", "onMapReady");
+        LatLng sydney = new LatLng(-33.852, 151.211);
+        googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

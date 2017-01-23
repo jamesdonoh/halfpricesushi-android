@@ -73,8 +73,12 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         outletViewHolder.text1.setText(outlet.getName());
         outletViewHolder.text2.setText(getFormattedDistanceToOutlet(outlet));
 
+        /* Now get a 'highlight' effect for free from the android:background on the item layout
+           so is it still worth having this?
+
         boolean isSelected = (position == selectedOutletPosition);
         outletViewHolder.itemView.setSelected(isSelected);
+        */
     }
 
     @Override

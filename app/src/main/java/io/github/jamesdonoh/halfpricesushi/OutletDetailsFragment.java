@@ -48,14 +48,16 @@ public class OutletDetailsFragment extends Fragment {
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(mOutlet.getName());
 
+        /*
         TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
-        //openingTimes.setText(mOutlet.getOpeningTimes());
+        openingTimes.setText(mOutlet.getOpeningTimes());
 
         TextView latitude = (TextView) view.findViewById(R.id.latitude);
         latitude.setText(Double.toString(mOutlet.getLatitude()));
 
         TextView longitude = (TextView) view.findViewById(R.id.longitude);
         longitude.setText(Double.toString(mOutlet.getLongitude()));
+        */
 
         return view;
     }

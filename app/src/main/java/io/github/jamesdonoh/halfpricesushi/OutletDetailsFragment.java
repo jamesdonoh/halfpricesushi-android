@@ -20,7 +20,7 @@ import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
 public class OutletDetailsFragment extends Fragment implements OnMapReadyCallback {
     // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
-    public final static String OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
+    public final static String ARG_OUTLET_ID = "io.github.jamesdonoh.halfpricesushi.outletId";
 
     private Outlet mOutlet;
 
@@ -31,7 +31,7 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         OutletDetailsFragment fragment = new OutletDetailsFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putInt(OUTLET_ID, outletId);
+        bundle.putInt(ARG_OUTLET_ID, outletId);
         fragment.setArguments(bundle);
 
         return fragment;
@@ -43,7 +43,7 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
 
         Bundle args = getArguments();
         if (args != null) {
-            int outletId = args.getInt(OUTLET_ID);
+            int outletId = args.getInt(ARG_OUTLET_ID);
             mOutlet = OutletStore.getOutletById(getContext(), outletId);
         }
     }

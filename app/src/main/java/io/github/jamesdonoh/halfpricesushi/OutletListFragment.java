@@ -132,7 +132,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
             intent.setClass(getActivity(), OutletDetailsActivity.class);
 
             // Pass outlet ID argument to detail activity via intent extra
-            intent.putExtra(OutletDetailsFragment.OUTLET_ID, outletId);
+            intent.putExtra(OutletDetailsFragment.ARG_OUTLET_ID, outletId);
 
             startActivity(intent);
         }

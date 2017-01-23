@@ -67,6 +67,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         super.onActivityCreated(savedInstanceState);
         Log.d("OutletListFragment", "onActivityCreated(" + (savedInstanceState != null ? "Bundle" : "") + ")");
 
+        // As parent activity has been created it is now safe to determine if in dual-pane mode
         View detailsFrame = getActivity().findViewById(R.id.details);
         mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 

@@ -35,6 +35,8 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         // This fragment would like to participate in populating the options menu
         setHasOptionsMenu(true);
 
+        mOutletAdapter = new OutletAdapter(OutletStore.getAllOutlets(getContext()), this);
+
         if (savedInstanceState != null) {
             mSelectedOutletId = savedInstanceState.getInt(SELECTED_OUTLET_ID);
             Log.d("OutletListFragment", "onCreate: restored selected ID = " + mSelectedOutletId);
@@ -55,8 +57,6 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
-
-        mOutletAdapter = new OutletAdapter(OutletStore.getAllOutlets(getContext()), this);
         recyclerView.setAdapter(mOutletAdapter);
 
         return view;

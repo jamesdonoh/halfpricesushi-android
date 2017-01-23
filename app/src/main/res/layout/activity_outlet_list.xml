@@ -10,6 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <include
+        layout="@layout/outlet_list_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <fragment android:name="io.github.jamesdonoh.halfpricesushi.OutletListFragment"
         android:id="@+id/list"
         android:layout_width="match_parent"

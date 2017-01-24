@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class OutletMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
@@ -26,6 +29,11 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        //String title = "blah";
+        //googleMap.addMarker(new MarkerOptions().position(position).title(title));
 
+        LatLng position = new LatLng(51.515514, -0.141864);
+        float zoom = 11;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
     }
 }

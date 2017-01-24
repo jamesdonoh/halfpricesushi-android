@@ -13,6 +13,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import io.github.jamesdonoh.halfpricesushi.model.Outlet;
+import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
+
 public class OutletMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,11 +32,15 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //String title = "blah";
-        //googleMap.addMarker(new MarkerOptions().position(position).title(title));
+        for (Outlet outlet : OutletStore.getAllOutlets(getContext())) {
+            // sushi = "\ud83c\udf63";
+            LatLng position = new LatLng(outlet.getLatitude(), outlet.getLongitude());
+            googleMap.addMarker(new MarkerOptions()
+                    .position(position));
+        }
 
-        LatLng position = new LatLng(51.515514, -0.141864);
-        float zoom = 11;
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+        LatLng oxfordCircus = new LatLng(51.515514, -0.141864);
+        float zoom = 12;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oxfordCircus, zoom));
     }
 }

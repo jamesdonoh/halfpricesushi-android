@@ -39,7 +39,7 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
             LatLng position = new LatLng(outlet.getLatitude(), outlet.getLongitude());
             googleMap.addMarker(new MarkerOptions()
                     .position(position)
-                    .title(outlet.getName());
+                    .title(outlet.getName()));
 //                    .snippet("Lots of sushi"));
         }
 

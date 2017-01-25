@@ -76,6 +76,7 @@ public class OutletFinderActivity extends AppCompatActivity implements
         super.onPause();
 
         if (mGoogleApiClient.isConnected()) {
+            Log.d(TAG, "Removing location updates");
             LocationServices.FusedLocationApi.removeLocationUpdates(
                     mGoogleApiClient, this);
         }
@@ -137,8 +138,6 @@ public class OutletFinderActivity extends AppCompatActivity implements
                         this /* OnConnectionFailedListener */)
                 .addConnectionCallbacks(this)
                 .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
                 .build();
         createLocationRequest();
     }
@@ -179,6 +178,7 @@ public class OutletFinderActivity extends AppCompatActivity implements
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
+            Log.d(TAG, "Location serviced granted immediately");
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -191,6 +191,7 @@ public class OutletFinderActivity extends AppCompatActivity implements
          */
         if (mLocationPermissionGranted) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            Log.d(TAG, "Requesting location updates");
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                     mLocationRequest, this);
         }
@@ -203,15 +204,14 @@ public class OutletFinderActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[],
                                            int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-            }
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+                && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+            Log.d(TAG, "Location services granted after requesting");
+        } else {
+            mLocationPermissionGranted = false;
+            Log.d(TAG, "Location services not granted even after requesting");
         }
     }
 }

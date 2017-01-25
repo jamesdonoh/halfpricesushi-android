@@ -46,6 +46,9 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
                     .title(outlet.getName()));
         }
 
+        // TODO handle possibility of no location services
+        mMap.setMyLocationEnabled(true);
+
         mMap.setOnInfoWindowClickListener(this);
 
         LatLng oxfordCircus = new LatLng(51.515514, -0.141864);

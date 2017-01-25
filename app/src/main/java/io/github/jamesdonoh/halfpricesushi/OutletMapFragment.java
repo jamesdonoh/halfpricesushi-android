@@ -3,6 +3,7 @@ package io.github.jamesdonoh.halfpricesushi;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -22,6 +23,10 @@ import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
 public class OutletMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMyLocationButtonClickListener {
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
+    private GoogleMap mMap;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,36 +41,55 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+
         for (Outlet outlet : OutletStore.getAllOutlets(getContext())) {
             // sushi = "\ud83c\udf63";
             LatLng position = new LatLng(outlet.getLatitude(), outlet.getLongitude());
-            googleMap.addMarker(new MarkerOptions()
+            map.addMarker(new MarkerOptions()
                     .position(position)
                     .title(outlet.getName()));
 //                    .snippet("Lots of sushi"));
         }
 
-        googleMap.setOnInfoWindowClickListener(this);
+        map.setOnInfoWindowClickListener(this);
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "Location permission granted :)",
+            Toast.makeText(getContext(), "Location permission granted straight away :)",
                     Toast.LENGTH_SHORT).show();
-            googleMap.setMyLocationEnabled(true);
-            //googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            googleMap.setOnMyLocationButtonClickListener(this);
+            enableMyLocation();
         } else {
-            // TODO request permission/handle gracefully
-            // https://developer.android.com/training/permissions/requesting.html
-            // https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MyLocationDemoActivity.java
-            Toast.makeText(getContext(), "Location permission denied :(",
-                    Toast.LENGTH_LONG).show();
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
 
         LatLng oxfordCircus = new LatLng(51.515514, -0.141864);
         float zoom = 12;
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oxfordCircus, zoom));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(oxfordCircus, zoom));
+    }
+
+    /**
+     * Handles the result of the request for location permissions.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[],
+                                           int[] grantResults) {
+        //mLocationPermissionGranted = false;
+
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getContext(), "onRequestPermissionsResult: granted",
+                    Toast.LENGTH_LONG).show();
+            enableMyLocation();
+        } else {
+            Toast.makeText(getContext(), "onRequestPermissionsResult: not granted",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        //updateLocationUI();
     }
 
     @Override
@@ -82,5 +106,13 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
+    }
+
+    private void enableMyLocation() {
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.setOnMyLocationButtonClickListener(this);
+        }
     }
 }

@@ -1,11 +1,7 @@
 package io.github.jamesdonoh.halfpricesushi;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
-public class OutletMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMyLocationButtonClickListener {
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
+public class OutletMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     private GoogleMap mMap;
 
     @Override
@@ -47,49 +41,16 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
         for (Outlet outlet : OutletStore.getAllOutlets(getContext())) {
             // sushi = "\ud83c\udf63";
             LatLng position = new LatLng(outlet.getLatitude(), outlet.getLongitude());
-            map.addMarker(new MarkerOptions()
+            mMap.addMarker(new MarkerOptions()
                     .position(position)
                     .title(outlet.getName()));
-//                    .snippet("Lots of sushi"));
         }
 
-        map.setOnInfoWindowClickListener(this);
-
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "Location permission granted straight away :)",
-                    Toast.LENGTH_SHORT).show();
-            enableMyLocation();
-        } else {
-            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
+        mMap.setOnInfoWindowClickListener(this);
 
         LatLng oxfordCircus = new LatLng(51.515514, -0.141864);
         float zoom = 12;
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(oxfordCircus, zoom));
-    }
-
-    /**
-     * Handles the result of the request for location permissions.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[],
-                                           int[] grantResults) {
-        //mLocationPermissionGranted = false;
-
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "onRequestPermissionsResult: granted",
-                    Toast.LENGTH_LONG).show();
-            enableMyLocation();
-        } else {
-            Toast.makeText(getContext(), "onRequestPermissionsResult: not granted",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        //updateLocationUI();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oxfordCircus, zoom));
     }
 
     @Override
@@ -99,6 +60,7 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
                 Toast.LENGTH_SHORT).show();
     }
 
+    /*
     @Override
     public boolean onMyLocationButtonClick() {
         // TODO this is just a a copy-paste - maybe remove if we don't need custom behaviour
@@ -107,12 +69,5 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
         // (the camera animates to the user's current position).
         return false;
     }
-
-    private void enableMyLocation() {
-        if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            mMap.setOnMyLocationButtonClickListener(this);
-        }
-    }
+    */
 }

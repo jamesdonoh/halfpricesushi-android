@@ -36,7 +36,9 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback {
             // sushi = "\ud83c\udf63";
             LatLng position = new LatLng(outlet.getLatitude(), outlet.getLongitude());
             googleMap.addMarker(new MarkerOptions()
-                    .position(position));
+                    .position(position)
+                    .title(outlet.getName())
+                    .snippet("Lots of sushi"));
         }
 
         LatLng oxfordCircus = new LatLng(51.515514, -0.141864);

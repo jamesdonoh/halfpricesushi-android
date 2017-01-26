@@ -71,6 +71,11 @@ public class OutletFinderActivity extends AppCompatActivity implements
         tabLayout.setupWithViewPager(viewPager);
 
         buildGoogleApiClient();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         mGoogleApiClient.connect();
     }
 
@@ -100,6 +105,8 @@ public class OutletFinderActivity extends AppCompatActivity implements
      */
     @Override
     public void onConnected(Bundle connectionHint) {
+        Log.d(TAG, "Google Play services connected!");
+
         getDeviceLocation();
     }
 
@@ -194,6 +201,13 @@ public class OutletFinderActivity extends AppCompatActivity implements
          */
         if (isLocationPermissionGranted()) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            if (mCurrentLocation != null) {
+                Log.d(TAG, "Last location: " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude());
+            } else {
+                Log.d(TAG, "getLastLocation was null!");
+            }
+
             Log.d(TAG, "Requesting location updates");
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                     mLocationRequest, this);

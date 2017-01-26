@@ -1,6 +1,7 @@
 package io.github.jamesdonoh.halfpricesushi;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -136,5 +137,9 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
             startActivity(intent);
         }
+    }
+
+    void onLocationChanged(Location location) {
+        mOutletAdapter.onLocationChanged(location);
     }
 }

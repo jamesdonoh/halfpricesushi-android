@@ -136,6 +136,10 @@ public class OutletFinderActivity extends AppCompatActivity implements
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged: " + location.getLatitude() + "," + location.getLongitude());
         mCurrentLocation = location;
+
+        // TODO BAD don't use a static index here
+        OutletListFragment listFragment = (OutletListFragment) mPagerAdapter.getRegisteredFragment(0);
+        listFragment.onLocationChanged(location);
     }
 
     /**
@@ -234,6 +238,7 @@ public class OutletFinderActivity extends AppCompatActivity implements
     private void setLocationPermissionGranted() {
         mLocationPermissionGranted = true;
 
+        // TODO don't use a fixed index here
         OutletMapFragment mapFragment = (OutletMapFragment) mPagerAdapter.getRegisteredFragment(1);
         mapFragment.onLocationPermissionGranted();
     }

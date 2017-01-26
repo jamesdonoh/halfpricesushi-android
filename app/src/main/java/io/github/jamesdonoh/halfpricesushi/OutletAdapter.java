@@ -1,10 +1,15 @@
 package io.github.jamesdonoh.halfpricesushi;
 
+import android.location.Location;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -16,31 +21,40 @@ import java.util.ListIterator;
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 
 class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder> {
+    private static final String TAG = OutletAdapter.class.getSimpleName();
+
     private final List<Outlet> sortedOutlets;
 
-    // TODO: move the sorting stuff somewhere else?
-    private Comparator<Outlet> mSortOrder = NAME_ORDER;
-
-    private final static Comparator<Outlet> NAME_ORDER = new Comparator<Outlet>() {
+    private final Comparator<Outlet> NAME_ORDER = new Comparator<Outlet>() {
         @Override
         public int compare(Outlet o1, Outlet o2) {
             return o1.getName().compareTo(o2.getName());
         }
     };
 
-    private final static Comparator<Outlet> DISTANCE_ORDER = new Comparator<Outlet>() {
+    private final Comparator<Outlet> DISTANCE_ORDER = new Comparator<Outlet>() {
         @Override
         public int compare(Outlet o1, Outlet o2) {
-            int o1m = getMetresTo(o1);
-            int o2m = getMetresTo(o2);
+            double o1m = getMetresTo(o1);
+            double o2m = getMetresTo(o2);
 
             return o1m > o2m ? 1 : o1m < o2m ? -1 : 0;
         }
     };
 
+    // TODO: move the sorting stuff somewhere else?
+    private Comparator<Outlet> mSortOrder = NAME_ORDER;
+
     private final OnOutletClickListener clickListener;
 
     private int selectedOutletPosition = RecyclerView.NO_POSITION;
+
+    // FIXME Do we need to store this state here as well as in OutletFinderActivity?
+    // FIXME default should not be Oxford Circus!
+    private LatLng mCurrentLatLng = new LatLng(51.515514, -0.141864);
+
+    // TODO get rid of this
+    private int mNumUpdates;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
         this.sortedOutlets = outletList;
@@ -101,6 +115,16 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         sortOutlets();
     }
 
+    void onLocationChanged(Location location) {
+        mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        Log.d(TAG, "lat/lng updated to " + mCurrentLatLng.latitude + "," + mCurrentLatLng.longitude
+                + " (" + ++mNumUpdates + " updates so far)");
+
+        // TODO make this more efficient rather than invalidating everything?
+        sortOutlets();
+    }
+
     private void sortOutlets() {
         // TODO optimise? also diff changes to allow for more efficient UI updates?
         Collections.sort(sortedOutlets, mSortOrder);
@@ -154,8 +178,8 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         throw new IllegalArgumentException("Outlet " + outletId + " not found in adapter list");
     }
 
-    private static String getFormattedDistanceToOutlet(Outlet outlet) {
-        float metres = (float)getMetresTo(outlet);
+    private String getFormattedDistanceToOutlet(Outlet outlet) {
+        double metres = getMetresTo(outlet);
         DecimalFormat df = new DecimalFormat("#.#");
         df.setRoundingMode(RoundingMode.HALF_UP);
         String kmStr = df.format(metres / 1000);
@@ -163,7 +187,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         return kmStr + "km";
     }
 
-    private static int getMetresTo(Outlet outlet) {
-        return outlet.getName().length() * 139;
+    private double getMetresTo(Outlet outlet) {
+        LatLng to = new LatLng(outlet.getLatitude(), outlet.getLongitude());
+
+        return SphericalUtil.computeDistanceBetween(mCurrentLatLng, to);
     }
 }

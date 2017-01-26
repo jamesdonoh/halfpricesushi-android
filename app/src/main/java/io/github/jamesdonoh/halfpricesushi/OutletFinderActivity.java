@@ -37,7 +37,9 @@ public class OutletFinderActivity extends AppCompatActivity implements
     // Keys for storing activity state.
     private static final String KEY_LOCATION = "location";
 
-    private boolean mLocationPermissionGranted;
+    private OutletFragmentPagerAdapter mPagerAdapter;
+
+    private boolean mLocationPermissionGranted = false;
 
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     private GoogleApiClient mGoogleApiClient;
@@ -62,7 +64,8 @@ public class OutletFinderActivity extends AppCompatActivity implements
         setSupportActionBar(myToolbar);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new OutletFragmentPagerAdapter(getSupportFragmentManager()));
+        mPagerAdapter = new OutletFragmentPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -177,8 +180,8 @@ public class OutletFinderActivity extends AppCompatActivity implements
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
             Log.d(TAG, "Location serviced granted immediately");
+            setLocationPermissionGranted();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -189,7 +192,7 @@ public class OutletFinderActivity extends AppCompatActivity implements
          * cases when a location is not available.
          * Also request regular updates about the device location.
          */
-        if (mLocationPermissionGranted) {
+        if (isLocationPermissionGranted()) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             Log.d(TAG, "Requesting location updates");
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
@@ -207,11 +210,21 @@ public class OutletFinderActivity extends AppCompatActivity implements
         if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
                 && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
             Log.d(TAG, "Location services granted after requesting");
+            setLocationPermissionGranted();
         } else {
-            mLocationPermissionGranted = false;
             Log.d(TAG, "Location services not granted even after requesting");
         }
+    }
+
+    private void setLocationPermissionGranted() {
+        mLocationPermissionGranted = true;
+
+        OutletMapFragment mapFragment = (OutletMapFragment) mPagerAdapter.getRegisteredFragment(1);
+        mapFragment.onLocationPermissionGranted();
+    }
+
+    private boolean isLocationPermissionGranted() {
+        return mLocationPermissionGranted;
     }
 }

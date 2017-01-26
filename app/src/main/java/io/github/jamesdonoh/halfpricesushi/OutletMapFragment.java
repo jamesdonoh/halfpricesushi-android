@@ -2,6 +2,7 @@ package io.github.jamesdonoh.halfpricesushi;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
 public class OutletMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
+    private static final String TAG = OutletFinderActivity.class.getSimpleName();
+
     private GoogleMap mMap;
 
     @Override
@@ -46,9 +49,6 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
                     .title(outlet.getName()));
         }
 
-        // TODO handle possibility of no location services
-        mMap.setMyLocationEnabled(true);
-
         mMap.setOnInfoWindowClickListener(this);
 
         LatLng oxfordCircus = new LatLng(51.515514, -0.141864);
@@ -61,6 +61,14 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
         // TODO make this open details activity - but what to do in landscape mode?
         Toast.makeText(getContext(), "Info window clicked",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    // TODO handle previously-granted permission being revoked?
+    @SuppressWarnings("MissingPermission")
+    void onLocationPermissionGranted() {
+        Log.d(TAG, "onLocationPermissionGranted: thanks for letting me know activity!");
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
     /*

@@ -15,7 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
@@ -59,7 +59,7 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         name.setText(mOutlet.getName());
 
         TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
-        int todayString = getTodayString();
+        String todayString = getTodayString();
         openingTimes.setText(todayString);
 
         /*
@@ -99,31 +99,9 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         return new LatLng(mOutlet.getLatitude(), mOutlet.getLongitude());
     }
 
-    private int getTodayString() {
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+    private String getTodayString() {
+        DateTime now = new DateTime();
 
-        return getDayString(day);
-    }
-
-    private static int getDayString(int day) {
-        switch (day) {
-            case Calendar.SUNDAY:
-                return R.string.sunday;
-            case Calendar.MONDAY:
-                return R.string.monday;
-            case Calendar.TUESDAY:
-                return R.string.tuesday;
-            case Calendar.WEDNESDAY:
-                return R.string.wednesday;
-            case Calendar.THURSDAY:
-                return R.string.thursday;
-            case Calendar.FRIDAY:
-                return R.string.friday;
-            case Calendar.SATURDAY:
-                return R.string.saturday;
-        }
-
-        return -1;
+        return now.dayOfWeek().getAsText();
     }
 }

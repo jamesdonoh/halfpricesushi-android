@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,6 +17,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
@@ -58,17 +64,20 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(mOutlet.getName());
 
-        TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
-        String todayString = getTodayString();
-        openingTimes.setText(todayString);
+        GridLayout gridLayout = (GridLayout) view.findViewById(R.id.opening_times_grid);
 
-        /*
-        TextView latitude = (TextView) view.findViewById(R.id.latitude);
-        latitude.setText(Double.toString(mOutlet.getLatitude()));
+        for (int day = DateTimeConstants.MONDAY; day <= DateTimeConstants.SUNDAY; day++) {
+            TextView dayNameView = new TextView(getContext());
+            String dayName = new LocalDate().withDayOfWeek(day).dayOfWeek().getAsText();
+            dayNameView.setText(dayName);
 
-        TextView longitude = (TextView) view.findViewById(R.id.longitude);
-        longitude.setText(Double.toString(mOutlet.getLongitude()));
-        */
+            TextView openingTimes = new TextView(getContext());
+            String timesStr = mOutlet.getOpeningTimesAsString(day);
+            openingTimes.setText(timesStr);
+
+            gridLayout.addView(dayNameView);
+            gridLayout.addView(openingTimes);
+        }
 
         return view;
     }

@@ -2,6 +2,8 @@ package io.github.jamesdonoh.halfpricesushi.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.joda.time.LocalTime;
+
 /**
  * Represents a physical outlet from which goods are sold or distributed,
  * such as a shop or restaurant.
@@ -33,11 +35,6 @@ public class Outlet {
         return name;
     }
 
-    /** Information about the opening times of the outlet */
-    public String getOpeningTimes() {
-        return openingTimes;
-    }
-
     /** The latitude of the location of the outlet */
     public double getLatitude() {
         return latitude;
@@ -46,5 +43,23 @@ public class Outlet {
     /** The longitude of the location of the outlet */
     public double getLongitude() {
         return longitude;
+    }
+
+    public LocalTime getOpeningTime(int dayOfWeek) {
+        String timeStr = "09:00";
+        return LocalTime.parse(timeStr);
+    }
+
+    public LocalTime getClosingTime(int dayOfWeek) {
+        String timeStr = "20:00";
+        return LocalTime.parse(timeStr);
+    }
+
+    /** String representation about the opening times of the outlet on the specified day */
+    public String getOpeningTimesAsString(int dayOfWeek) {
+        String openingTime = getOpeningTime(dayOfWeek).toString("HH:mm");
+        String closingTime = getClosingTime(dayOfWeek).toString("HH:mm");
+
+        return openingTime + " - " + closingTime;
     }
 }

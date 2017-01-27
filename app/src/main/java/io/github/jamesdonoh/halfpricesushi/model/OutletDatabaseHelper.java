@@ -26,6 +26,13 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
         static final String COLUMN_NAME_NAME = "name";
         static final String COLUMN_NAME_LATITUDE= "latitude";
         static final String COLUMN_NAME_LONGITUDE = "longitude";
+        static final String COLUMN_NAME_TIMES_MON = "times_mon";
+        static final String COLUMN_NAME_TIMES_TUE = "times_tue";
+        static final String COLUMN_NAME_TIMES_WED = "times_wed";
+        static final String COLUMN_NAME_TIMES_THU = "times_thu";
+        static final String COLUMN_NAME_TIMES_FRI = "times_fri";
+        static final String COLUMN_NAME_TIMES_SAT = "times_sat";
+        static final String COLUMN_NAME_TIMES_SUN = "times_sun";
     }
 
     private static final String SQL_CREATE_ENTRIES =
@@ -33,7 +40,14 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
                     OutletEntry._ID + " INTEGER PRIMARY KEY, " +
                     OutletEntry.COLUMN_NAME_NAME + " TEXT, " +
                     OutletEntry.COLUMN_NAME_LONGITUDE + " REAL, " +
-                    OutletEntry.COLUMN_NAME_LATITUDE + " REAL)";
+                    OutletEntry.COLUMN_NAME_LATITUDE + " REAL, " +
+                    OutletEntry.COLUMN_NAME_TIMES_MON + " TEXT, " +
+                    OutletEntry.COLUMN_NAME_TIMES_TUE + " TEXT, " +
+                    OutletEntry.COLUMN_NAME_TIMES_WED + " TEXT, " +
+                    OutletEntry.COLUMN_NAME_TIMES_THU + " TEXT, " +
+                    OutletEntry.COLUMN_NAME_TIMES_FRI + " TEXT, " +
+                    OutletEntry.COLUMN_NAME_TIMES_SAT + " TEXT, " +
+                    OutletEntry.COLUMN_NAME_TIMES_SUN + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + OutletEntry.TABLE_NAME;
@@ -87,7 +101,14 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
             OutletEntry._ID,
             OutletEntry.COLUMN_NAME_NAME,
             OutletEntry.COLUMN_NAME_LONGITUDE,
-            OutletEntry.COLUMN_NAME_LATITUDE
+            OutletEntry.COLUMN_NAME_LATITUDE,
+            OutletEntry.COLUMN_NAME_TIMES_MON,
+            OutletEntry.COLUMN_NAME_TIMES_TUE,
+            OutletEntry.COLUMN_NAME_TIMES_WED,
+            OutletEntry.COLUMN_NAME_TIMES_THU,
+            OutletEntry.COLUMN_NAME_TIMES_FRI,
+            OutletEntry.COLUMN_NAME_TIMES_SAT,
+            OutletEntry.COLUMN_NAME_TIMES_SUN
         };
 
         // TODO: What about error handling?
@@ -99,7 +120,26 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
             double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletEntry.COLUMN_NAME_LATITUDE));
             double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(OutletEntry.COLUMN_NAME_LONGITUDE));
 
-            Outlet outlet = new Outlet(outletId, outletName, "never", latitude, longitude);
+            Outlet outlet = new Outlet(outletId, outletName, latitude, longitude);
+
+            // FIXME urgh
+            String[] columnNames = new String[] {
+                    OutletEntry.COLUMN_NAME_TIMES_MON,
+                    OutletEntry.COLUMN_NAME_TIMES_TUE,
+                    OutletEntry.COLUMN_NAME_TIMES_WED,
+                    OutletEntry.COLUMN_NAME_TIMES_THU,
+                    OutletEntry.COLUMN_NAME_TIMES_FRI,
+                    OutletEntry.COLUMN_NAME_TIMES_SAT,
+                    OutletEntry.COLUMN_NAME_TIMES_SUN
+            };
+            for (int day = 1; day <= 7; day++) {
+                String times = cursor.getString(cursor.getColumnIndexOrThrow(columnNames[day - 1]));
+                if (times != null) {
+                    String[] parts = times.split("-");
+                    outlet.setOpeningTimes(day, parts[0], parts[1]);
+                }
+            }
+
             outlets.add(outlet);
         }
         cursor.close();
@@ -123,6 +163,14 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
             values.put(OutletEntry.COLUMN_NAME_NAME, outlet.getName());
             values.put(OutletEntry.COLUMN_NAME_LATITUDE, outlet.getLatitude());
             values.put(OutletEntry.COLUMN_NAME_LONGITUDE, outlet.getLongitude());
+
+            values.put(OutletEntry.COLUMN_NAME_TIMES_MON, outlet.getOpeningTimesAsString(1));
+            values.put(OutletEntry.COLUMN_NAME_TIMES_TUE, outlet.getOpeningTimesAsString(2));
+            values.put(OutletEntry.COLUMN_NAME_TIMES_WED, outlet.getOpeningTimesAsString(3));
+            values.put(OutletEntry.COLUMN_NAME_TIMES_THU, outlet.getOpeningTimesAsString(4));
+            values.put(OutletEntry.COLUMN_NAME_TIMES_FRI, outlet.getOpeningTimesAsString(5));
+            values.put(OutletEntry.COLUMN_NAME_TIMES_SAT, outlet.getOpeningTimesAsString(6));
+            values.put(OutletEntry.COLUMN_NAME_TIMES_SUN, outlet.getOpeningTimesAsString(7));
 
             db.insertOrThrow(OutletEntry.TABLE_NAME, null, values);
             db.setTransactionSuccessful();

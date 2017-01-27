@@ -73,6 +73,8 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
 
             TextView openingTimes = new TextView(getContext());
             String timesStr = mOutlet.getOpeningTimesAsString(day);
+            if (timesStr == null)
+                timesStr = "(closed)";
             openingTimes.setText(timesStr);
 
             gridLayout.addView(dayNameView);

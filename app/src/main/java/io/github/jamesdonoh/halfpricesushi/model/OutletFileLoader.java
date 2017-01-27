@@ -15,7 +15,9 @@ import java.util.List;
  * Class to load outlet definitions from a JSON file.
  */
 public class OutletFileLoader {
+    // TODO maybe use GSON instead?
     public static List<Outlet> getOutlets(Context context) {
+        // TODO must handle JSONExceptions here
         JSONArray outletData = loadJSONArray(context, "outlets.json");
         return parseOutletData(outletData);
     }
@@ -23,13 +25,29 @@ public class OutletFileLoader {
     private static Outlet parseJSONOutlet(JSONObject data) throws JSONException {
         int id = data.getInt("id");
         String name = data.getString("name");
-        String openingTimes = data.getString("times");
 
         JSONObject location = data.getJSONObject("location");
         double latitude = location.getDouble("lat");
         double longitude = location.getDouble("long");
 
-        return new Outlet(id, name, openingTimes, latitude, longitude);
+        // Todo make this nicer
+        Outlet outlet = new Outlet(id, name, latitude, longitude);
+
+        JSONObject times = data.getJSONObject("times");
+        String[] dayNames = new String[] { "mon", "tue", "wed", "thu", "fri", "sat", "sun" };
+        for (int day = 1; day <= 7; day++) {
+            String dayName = dayNames[day - 1];
+            if (times.has(dayName)) {
+                JSONObject dayInfo = times.getJSONObject(dayName);
+
+                String opens = dayInfo.getString("opens");
+                String closes = dayInfo.getString("closes");
+
+                outlet.setOpeningTimes(day, opens, closes);
+            }
+        }
+
+        return outlet;
     }
 
     private static List<Outlet> parseOutletData(JSONArray outletData) {

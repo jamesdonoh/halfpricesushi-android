@@ -122,6 +122,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
                 + " (" + ++mNumUpdates + " updates so far)");
 
         // TODO make this more efficient rather than invalidating everything?
+        // TODO only do this if we're actually visible?
         sortOutlets();
     }
 

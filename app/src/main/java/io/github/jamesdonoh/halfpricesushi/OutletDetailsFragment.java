@@ -15,6 +15,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Calendar;
+
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
 
@@ -56,10 +58,11 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(mOutlet.getName());
 
-        /*
         TextView openingTimes = (TextView) view.findViewById(R.id.opening_times);
-        openingTimes.setText(mOutlet.getOpeningTimes());
+        int todayString = getTodayString();
+        openingTimes.setText(todayString);
 
+        /*
         TextView latitude = (TextView) view.findViewById(R.id.latitude);
         latitude.setText(Double.toString(mOutlet.getLatitude()));
 
@@ -94,5 +97,33 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
 
     private LatLng getPosition() {
         return new LatLng(mOutlet.getLatitude(), mOutlet.getLongitude());
+    }
+
+    private int getTodayString() {
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        return getDayString(day);
+    }
+
+    private static int getDayString(int day) {
+        switch (day) {
+            case Calendar.SUNDAY:
+                return R.string.sunday;
+            case Calendar.MONDAY:
+                return R.string.monday;
+            case Calendar.TUESDAY:
+                return R.string.tuesday;
+            case Calendar.WEDNESDAY:
+                return R.string.wednesday;
+            case Calendar.THURSDAY:
+                return R.string.thursday;
+            case Calendar.FRIDAY:
+                return R.string.friday;
+            case Calendar.SATURDAY:
+                return R.string.saturday;
+        }
+
+        return -1;
     }
 }

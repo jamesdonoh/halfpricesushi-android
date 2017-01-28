@@ -4,7 +4,9 @@ import android.util.SparseArray;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
+import org.joda.time.Minutes;
 
 import java.util.HashMap;
 
@@ -60,6 +62,16 @@ public class Outlet {
             return null;
 
         return openingTime.toString("HH:mm") + "-" + closingTime.toString("HH:mm");
+    }
+
+    public int getMinsToClosingTime() {
+        DateTime now = new DateTime();
+
+        OpeningTimes times = openingTimes.get(now.getDayOfWeek());
+        if (times == null || times.closes == null)
+            return 0;
+
+        return Minutes.minutesBetween(now.toLocalTime(), times.closes).getMinutes();
     }
 
     void setOpeningTimes(int dayOfWeek, String openingTime, String closingTime) {

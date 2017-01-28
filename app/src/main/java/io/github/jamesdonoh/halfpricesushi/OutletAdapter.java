@@ -13,6 +13,7 @@ import com.google.maps.android.SphericalUtil;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,12 +24,13 @@ import io.github.jamesdonoh.halfpricesushi.model.Outlet;
 class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder> {
     private static final String TAG = OutletAdapter.class.getSimpleName();
 
-    private final List<Outlet> sortedOutlets;
+    private final ArrayList<Outlet> sortedOutlets;
 
-    private final Comparator<Outlet> NAME_ORDER = new Comparator<Outlet>() {
+    private final Comparator<Outlet> CLOSING_TIME_ORDER = new Comparator<Outlet>() {
         @Override
         public int compare(Outlet o1, Outlet o2) {
-            return o1.getName().compareTo(o2.getName());
+            // Integer.compare not available pre-1.7 but Double.compareTo has same effect
+            return Double.compare(o1.getMinsToClosingTime(), o2.getMinsToClosingTime());
         }
     };
 
@@ -43,7 +45,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     };
 
     // TODO: move the sorting stuff somewhere else?
-    private Comparator<Outlet> mSortOrder = NAME_ORDER;
+    private Comparator<Outlet> mSortOrder = CLOSING_TIME_ORDER;
 
     private final OnOutletClickListener clickListener;
 
@@ -57,7 +59,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     private int mNumUpdates;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
-        this.sortedOutlets = outletList;
+        this.sortedOutlets = new ArrayList<Outlet>(outletList);
         sortOutlets();
 
         // TODO defend against null clickListener
@@ -87,6 +89,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         outletViewHolder.text1.setText(outlet.getName());
         outletViewHolder.text2.setText(getFormattedDistanceToOutlet(outlet));
 
+        String closingInfo = outlet.getMinsToClosingTime() + "min";
+        outletViewHolder.text3.setText(closingInfo);
+
         /* Now get a 'highlight' effect for free from the android:background on the item layout
            so is it still worth having this?
 
@@ -107,7 +112,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     void toggleSortOrder() {
         if (mSortOrder == DISTANCE_ORDER) {
-            mSortOrder = NAME_ORDER;
+            mSortOrder = CLOSING_TIME_ORDER;
         } else {
             mSortOrder = DISTANCE_ORDER;
         }
@@ -126,7 +131,21 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         sortOutlets();
     }
 
+    private void filterOutlets() {
+        // TODO make this non-destructive; what happens at midnight?
+        // TODO optimise using notifyItemChanged/notifyItemRangeRemoved
+        for (int i = sortedOutlets.size() - 1; i >= 0; i--) {
+            Outlet outlet = sortedOutlets.get(i);
+            if (outlet.getMinsToClosingTime() <= 0)
+                sortedOutlets.remove(i);
+        }
+
+        notifyDataSetChanged();
+    }
+
     private void sortOutlets() {
+        filterOutlets();
+
         // TODO optimise? also diff changes to allow for more efficient UI updates?
         Collections.sort(sortedOutlets, mSortOrder);
         notifyDataSetChanged();
@@ -134,14 +153,15 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
 
     class OutletViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView text1;
-
         private final TextView text2;
+        private final TextView text3;
 
         private OutletViewHolder(View itemView) {
             super(itemView);
 
             text1 = (TextView) itemView.findViewById(R.id.text1);
             text2 = (TextView) itemView.findViewById(R.id.text2);
+            text3 = (TextView) itemView.findViewById(R.id.text3);
 
             itemView.setOnClickListener(this);
         }

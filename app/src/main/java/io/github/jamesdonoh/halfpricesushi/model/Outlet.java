@@ -81,7 +81,7 @@ public class Outlet {
         if (times == null || times.closes == null)
             return 0;
 
-        return Minutes.minutesBetween(now.toLocalTime(), times.closes).getMinutes();
+        return Minutes.minutesBetween(now.toLocalTime(), times.closes).getMinutes() + 1;
     }
 
     void setOpeningTimes(int dayOfWeek, String openingTime, String closingTime) {

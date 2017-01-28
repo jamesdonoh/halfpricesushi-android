@@ -48,6 +48,8 @@ public class Outlet {
         return longitude;
     }
 
+    // TODO DRY up the following methods
+
     /** String representation about the opening times of the outlet on the specified day */
     public String getOpeningTimesAsString(int dayOfWeek) {
         OpeningTimes times = openingTimes.get(dayOfWeek);
@@ -60,6 +62,16 @@ public class Outlet {
             return null;
 
         return openingTime.toString("HH:mm") + "-" + closingTime.toString("HH:mm");
+    }
+
+    public String getClosingTime() {
+        DateTime now = new DateTime();
+
+        OpeningTimes times = openingTimes.get(now.getDayOfWeek());
+        if (times == null || times.closes == null)
+            return null;
+
+        return times.closes.toString("HH:mm");
     }
 
     public int getMinsToClosingTime() {

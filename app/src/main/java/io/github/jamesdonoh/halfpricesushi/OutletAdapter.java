@@ -89,7 +89,11 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         outletViewHolder.text1.setText(outlet.getName());
         outletViewHolder.text2.setText(getFormattedDistanceToOutlet(outlet));
 
-        String closingInfo = outlet.getMinsToClosingTime() + "min";
+        int threshold = 31;
+        String closingInfo = outlet.getClosingTime();
+        int minsToClosingTime = outlet.getMinsToClosingTime();
+        if (minsToClosingTime < threshold)
+            closingInfo = minsToClosingTime + "min";
         outletViewHolder.text3.setText(closingInfo);
 
         /* Now get a 'highlight' effect for free from the android:background on the item layout
@@ -134,7 +138,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     void filterOutlets() {
         //Log.d(TAG, "filterOutlets called");
         // TODO make this non-destructive; what happens at midnight?
-        // TODO optimise using notifyItemChanged/notifyItemRangeRemoved
+        // TODO optimise using notifyItemChanged/notifyItemRangeRemoved (not all change!)
         for (int i = sortedOutlets.size() - 1; i >= 0; i--) {
             Outlet outlet = sortedOutlets.get(i);
             if (outlet.getMinsToClosingTime() <= 0)

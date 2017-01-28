@@ -131,7 +131,8 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         sortOutlets();
     }
 
-    private void filterOutlets() {
+    void filterOutlets() {
+        //Log.d(TAG, "filterOutlets called");
         // TODO make this non-destructive; what happens at midnight?
         // TODO optimise using notifyItemChanged/notifyItemRangeRemoved
         for (int i = sortedOutlets.size() - 1; i >= 0; i--) {

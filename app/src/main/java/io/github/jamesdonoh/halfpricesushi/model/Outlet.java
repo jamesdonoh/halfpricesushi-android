@@ -8,8 +8,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 
-import java.util.HashMap;
-
 /**
  * Represents a physical outlet from which goods are sold or distributed,
  * such as a shop or restaurant.

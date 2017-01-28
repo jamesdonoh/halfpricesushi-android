@@ -3,6 +3,7 @@ package io.github.jamesdonoh.halfpricesushi;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
@@ -22,11 +23,26 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
     private final static int NONE = -1;
 
+    private final static int UPDATE_INTERVAL = 1000;
+
     private OutletAdapter mOutletAdapter;
 
     private boolean mDualPane;
 
     private int mSelectedOutletId = NONE;
+
+    private Handler mUpdateHandler;
+
+    private Runnable mUpdateChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                mOutletAdapter.filterOutlets();
+            } finally {
+                mUpdateHandler.postDelayed(mUpdateChecker, UPDATE_INTERVAL);
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +58,32 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
             mSelectedOutletId = savedInstanceState.getInt(SELECTED_OUTLET_ID);
             Log.d("OutletListFragment", "onCreate: restored selected ID = " + mSelectedOutletId);
         }
+
+        mUpdateHandler = new Handler();
+    }
+
+    /** Fragment is visible to the user */
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mUpdateChecker.run();
+    }
+
+    /** Fragment is no longer started (i.e. visible to the user) */
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        mUpdateHandler.removeCallbacks(mUpdateChecker);
+    }
+
+    private void startUpdateHandler() {
+
+    }
+
+    private void stopUpdateHandler() {
+
     }
 
     @Override

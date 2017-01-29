@@ -10,11 +10,8 @@
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView android:id="@+id/icon"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="4dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,11 +21,11 @@
         <TextView android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp" />
+            style="@style/ListItemName" />
         <TextView android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="8dp" />
+            style="@style/ListItemDistance" />
     </LinearLayout>
 
     <TextView android:id="@+id/text3"

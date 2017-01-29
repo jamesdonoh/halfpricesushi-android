@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 
@@ -41,8 +42,15 @@ public class SplashActivity extends AppCompatActivity
     }
 
     public void onError(Exception error) {
-        // Allow user to retry request
-        showDataErrorDialog();
+        boolean cachedDataAvailable = true;
+
+        if (cachedDataAvailable) {
+            showCachedDataWarning();
+            startFinderActivity();
+        } else {
+            // Allow user to retry request
+            showDataErrorDialog();
+        }
     }
 
     public void onRetryClick() {
@@ -56,6 +64,10 @@ public class SplashActivity extends AppCompatActivity
 
     private void requestApiData() {
         mApi.loadData(this);
+    }
+
+    private void showCachedDataWarning() {
+        Toast.makeText(this, R.string.cached_data_warning, Toast.LENGTH_LONG).show();
     }
 
     private void startFinderActivity() {

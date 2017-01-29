@@ -6,4 +6,5 @@
     <string name="opening_times">Opening times</string>
     <string name="api_error">Sorry, there was an error loading offer data.</string>
     <string name="retry">Retry</string>
+    <string name="cached_data_warning">Error updating offer data, will retry later.</string>
 </resources>

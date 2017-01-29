@@ -6,22 +6,31 @@
     android:paddingBottom="4dp"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
+    android:layout_gravity="center"
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0" />
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp" />
 
-    <TextView android:id="@+id/text1"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
-    <TextView android:id="@+id/text2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="8dp"
-        android:layout_weight="0" />
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <TextView android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp" />
+        <TextView android:id="@+id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="8dp" />
+    </LinearLayout>
+
     <TextView android:id="@+id/text3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

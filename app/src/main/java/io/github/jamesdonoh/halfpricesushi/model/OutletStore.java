@@ -30,4 +30,8 @@ public class OutletStore {
 
         throw new IllegalArgumentException("Unknown outlet ID: " + outletId);
     }
+
+    public static int getNumOutlets(Context context) {
+        return getAllOutlets(context).size();
+    }
 }

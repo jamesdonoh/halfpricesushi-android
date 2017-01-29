@@ -8,6 +8,8 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
-    <style name="ListItemName" parent="@android:style/TextAppearance.Medium" />
+    <style name="ListItemName">
+        <item name="android:textSize">17sp</item>
+    </style>
     <style name="ListItemDistance" parent="@android:style/TextAppearance.Small" />
 </resources>

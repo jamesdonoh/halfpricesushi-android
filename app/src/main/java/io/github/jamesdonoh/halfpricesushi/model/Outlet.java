@@ -2,8 +2,6 @@ package io.github.jamesdonoh.halfpricesushi.model;
 
 import android.util.SparseArray;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;

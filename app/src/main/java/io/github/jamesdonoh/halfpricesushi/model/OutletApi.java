@@ -11,6 +11,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import io.github.jamesdonoh.halfpricesushi.R;
 
@@ -20,6 +21,8 @@ import io.github.jamesdonoh.halfpricesushi.R;
  *
  * Follows singleton pattern recommended by
  * https://developer.android.com/training/volley/requestqueue.html
+ *
+ * TODO client should not have to update database and API separately
  */
 public class OutletApi {
     private static final String TAG = OutletApi.class.getSimpleName();
@@ -54,10 +57,9 @@ public class OutletApi {
     }
 
     public void loadData(final DataHandler handler) {
-        RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = mBaseUrl + "/outlets/all";
 
-        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -74,11 +76,22 @@ public class OutletApi {
                 }
         );
 
-        // Set the tag on the request so it can be cancelled later
-        jsonObjectRequest.setTag(TAG);
+        addToQueue(jsonArrayRequest);
+    }
 
-        Log.i(TAG, "loadData: queueing request for " + url);
-        queue.add(jsonObjectRequest);
+    public void setRating(int outletId, int rating) {
+        if (rating < 1 || rating > 5)
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+
+        String url = mBaseUrl + "/ratings/outlet/" + outletId;
+    }
+
+    private void addToQueue(Request request) {
+        // Set tag on request so it can be cancelled later
+        request.setTag(TAG);
+
+        Log.i(TAG, "queueing request for " + request.getUrl());
+        mRequestQueue.add(request);
     }
 
     public interface DataHandler {

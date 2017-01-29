@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -102,6 +103,8 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         boolean isSelected = (position == selectedOutletPosition);
         outletViewHolder.itemView.setSelected(isSelected);
         */
+
+        outletViewHolder.icon.setImageResource(R.mipmap.ic_launcher);
     }
 
     @Override
@@ -157,6 +160,8 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     }
 
     class OutletViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final ImageView icon;
+
         private final TextView text1;
         private final TextView text2;
         private final TextView text3;
@@ -164,6 +169,7 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         private OutletViewHolder(View itemView) {
             super(itemView);
 
+            icon = (ImageView) itemView.findViewById(R.id.icon);
             text1 = (TextView) itemView.findViewById(R.id.text1);
             text2 = (TextView) itemView.findViewById(R.id.text2);
             text3 = (TextView) itemView.findViewById(R.id.text3);

@@ -70,7 +70,7 @@ public class OutletApi {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "onResponse - error", error);
+                        Log.e(TAG, "onResponse - error: " + error.toString(), error);
                         handler.onError(error);
                     }
                 }

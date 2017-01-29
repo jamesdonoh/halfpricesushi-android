@@ -153,12 +153,20 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
         return DatabaseUtils.queryNumEntries(getReadableDatabase(), OutletEntry.TABLE_NAME) > 0;
     }
 
-    void storeOutletData(JSONArray jsonArray) {
+    void updateOutletData(JSONArray jsonArray) {
+        if (jsonArray == null || jsonArray.length() == 0)
+            return;
+
         SQLiteDatabase db = getWritableDatabase();
+        deleteAllOutletData(db);
 
         for (Outlet outlet : OutletJsonLoader.fromJsonArray(jsonArray)) {
             insertOutlet(db, outlet);
         }
+    }
+
+    private void deleteAllOutletData(SQLiteDatabase db) {
+        db.execSQL("DELETE FROM "+ OutletEntry.TABLE_NAME);
     }
 
     private void insertOutlet(SQLiteDatabase db, Outlet outlet) {

@@ -37,7 +37,7 @@ public class OutletCache {
         return OutletDatabaseHelper.getInstance(context).hasOutletData();
     }
 
-    public static void storeOutletData(Context context, JSONArray jsonArray) {
-        OutletDatabaseHelper.getInstance(context).storeOutletData(jsonArray);
+    public static void updateOutletData(Context context, JSONArray jsonArray) {
+        OutletDatabaseHelper.getInstance(context).updateOutletData(jsonArray);
     }
 }

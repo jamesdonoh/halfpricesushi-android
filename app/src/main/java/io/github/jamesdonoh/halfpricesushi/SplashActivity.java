@@ -37,14 +37,15 @@ public class SplashActivity extends AppCompatActivity
     }
 
     public void onDataLoaded(JSONArray jsonArray) {
-        OutletCache.storeOutletData(this, jsonArray);
+        OutletCache.updateOutletData(this, jsonArray);
 
+        showDataUpdatedNotice();
         startFinderActivity();
     }
 
     public void onError(Exception error) {
         if (OutletCache.hasOutletData(this)) {
-            showCachedDataWarning();
+            showUsingCachedDataWarning();
             startFinderActivity();
         } else {
             // Allow user to retry request
@@ -65,7 +66,11 @@ public class SplashActivity extends AppCompatActivity
         mApi.loadData(this);
     }
 
-    private void showCachedDataWarning() {
+    private void showDataUpdatedNotice() {
+        Toast.makeText(this, R.string.data_updated, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showUsingCachedDataWarning() {
         Toast.makeText(this, R.string.cached_data_warning, Toast.LENGTH_LONG).show();
     }
 

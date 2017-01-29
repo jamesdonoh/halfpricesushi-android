@@ -2,6 +2,8 @@ package io.github.jamesdonoh.halfpricesushi.model;
 
 import android.content.Context;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * Data access layer that provides caching and hides database implementation.
  * TODO: rename class, confusing name?
  */
-public class OutletStore {
+public class OutletCache {
     private static List<Outlet> outlets = null;
 
     public static List<Outlet> getAllOutlets(Context context) {
@@ -31,7 +33,11 @@ public class OutletStore {
         throw new IllegalArgumentException("Unknown outlet ID: " + outletId);
     }
 
-    public static int getNumOutlets(Context context) {
-        return getAllOutlets(context).size();
+    public static boolean hasOutletData(Context context) {
+        return OutletDatabaseHelper.getInstance(context).hasOutletData();
+    }
+
+    public static void storeOutletData(Context context, JSONArray jsonArray) {
+        OutletDatabaseHelper.getInstance(context).storeOutletData(jsonArray);
     }
 }

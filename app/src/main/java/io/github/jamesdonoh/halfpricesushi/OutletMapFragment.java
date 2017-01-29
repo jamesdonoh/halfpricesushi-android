@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
-import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
+import io.github.jamesdonoh.halfpricesushi.model.OutletCache;
 
 public class OutletMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     private static final String TAG = OutletFinderActivity.class.getSimpleName();
@@ -45,7 +45,7 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
 
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher);
 
-        for (Outlet outlet : OutletStore.getAllOutlets(getContext())) {
+        for (Outlet outlet : OutletCache.getAllOutlets(getContext())) {
             // sushi = "\ud83c\udf63";
             LatLng position = new LatLng(outlet.getLatitude(), outlet.getLongitude());
             mMap.addMarker(new MarkerOptions()

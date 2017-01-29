@@ -9,6 +9,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 
 import io.github.jamesdonoh.halfpricesushi.model.OutletApi;
+import io.github.jamesdonoh.halfpricesushi.model.OutletCache;
 
 /**
  * Branded launch screen, following advice at
@@ -36,15 +37,13 @@ public class SplashActivity extends AppCompatActivity
     }
 
     public void onDataLoaded(JSONArray jsonArray) {
-        // Got API data, cool
-        // TODO store the API data in the database
+        OutletCache.storeOutletData(this, jsonArray);
+
         startFinderActivity();
     }
 
     public void onError(Exception error) {
-        boolean cachedDataAvailable = true;
-
-        if (cachedDataAvailable) {
+        if (OutletCache.hasOutletData(this)) {
             showCachedDataWarning();
             startFinderActivity();
         } else {

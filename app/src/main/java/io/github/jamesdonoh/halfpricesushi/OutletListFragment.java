@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
+import io.github.jamesdonoh.halfpricesushi.model.OutletCache;
 
 public class OutletListFragment extends Fragment implements OutletAdapter.OnOutletClickListener {
     private final static String SELECTED_OUTLET_ID = "selectedOutlet";
@@ -52,7 +52,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         // This fragment would like to participate in populating the options menu
         setHasOptionsMenu(true);
 
-        mOutletAdapter = new OutletAdapter(OutletStore.getAllOutlets(getContext()), this);
+        mOutletAdapter = new OutletAdapter(OutletCache.getAllOutlets(getContext()), this);
 
         if (savedInstanceState != null) {
             mSelectedOutletId = savedInstanceState.getInt(SELECTED_OUTLET_ID);

@@ -18,13 +18,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
-import org.joda.time.Duration;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.joda.time.Seconds;
 
 import io.github.jamesdonoh.halfpricesushi.model.Outlet;
-import io.github.jamesdonoh.halfpricesushi.model.OutletStore;
+import io.github.jamesdonoh.halfpricesushi.model.OutletCache;
 
 public class OutletDetailsFragment extends Fragment implements OnMapReadyCallback {
     // See https://developer.android.com/reference/android/content/Intent.html#putExtras%28android.os.Bundle%29
@@ -52,7 +49,7 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         Bundle args = getArguments();
         if (args != null) {
             int outletId = args.getInt(ARG_OUTLET_ID);
-            mOutlet = OutletStore.getOutletById(getContext(), outletId);
+            mOutlet = OutletCache.getOutletById(getContext(), outletId);
         }
     }
 

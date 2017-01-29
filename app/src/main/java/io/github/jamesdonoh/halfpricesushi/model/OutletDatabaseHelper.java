@@ -3,10 +3,14 @@ package io.github.jamesdonoh.halfpricesushi.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.support.v4.database.DatabaseUtilsCompat;
 import android.util.Log;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +70,7 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
 
     private OutletDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mContext = context; // can be deleted once OutletFileLoader is no longer used
+        mContext = context; // can be deleted once OutletJsonLoader is no longer used
 
         Log.i(TAG, "Instance created");
     }
@@ -75,8 +79,6 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.i(TAG, "Creating database " + DATABASE_NAME);
         db.execSQL(SQL_CREATE_ENTRIES);
-
-        importJsonData(db);
     }
 
     @Override
@@ -147,10 +149,14 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
         return outlets;
     }
 
-    private void importJsonData(SQLiteDatabase db) {
-        Log.i(TAG, "Importing JSON data");
+    boolean hasOutletData() {
+        return DatabaseUtils.queryNumEntries(getReadableDatabase(), OutletEntry.TABLE_NAME) > 0;
+    }
 
-        for (Outlet outlet : OutletFileLoader.getOutlets(mContext)) {
+    void storeOutletData(JSONArray jsonArray) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        for (Outlet outlet : OutletJsonLoader.fromJsonArray(jsonArray)) {
             insertOutlet(db, outlet);
         }
     }

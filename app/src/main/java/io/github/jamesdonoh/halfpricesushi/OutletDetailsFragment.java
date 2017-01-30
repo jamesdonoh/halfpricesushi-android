@@ -13,6 +13,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -99,7 +101,13 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         LatLng position = getPosition();
         String title = mOutlet.getName();
 
-        googleMap.addMarker(new MarkerOptions().position(position).title(title));
+        // TODO DRY this up with OutletMapFragment?
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher);
+
+        googleMap.addMarker(new MarkerOptions()
+                .position(position)
+                .title(title)
+                .icon(bitmapDescriptor));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
     }
 

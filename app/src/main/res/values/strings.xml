@@ -8,4 +8,5 @@
     <string name="retry">Retry</string>
     <string name="cached_data_warning">Error updating data, will retry later.</string>
     <string name="data_updated">Data updated</string>
+    <string name="my_rating">My rating</string>
 </resources>

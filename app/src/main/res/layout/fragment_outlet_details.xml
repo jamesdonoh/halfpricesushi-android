@@ -7,15 +7,22 @@
     android:orientation="vertical"
     tools:context="io.github.jamesdonoh.halfpricesushi.OutletDetailsFragment">
 
-    <TextView
-        android:id="@+id/name"
+    <fragment
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="200dp"
+        map:liteMode="true"
+        map:cameraZoom="15" />
 
     <TextView
-        android:text="@string/opening_times"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        style="@style/TextAppearance.AppCompat.Large" />
 
     <GridLayout
             android:id="@+id/opening_times_grid"
@@ -26,17 +33,4 @@
             android:layout_gravity="center">
     </GridLayout>
 
-    <TextView
-        android:id="@+id/opening_times"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <fragment
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        map:liteMode="true"
-        map:cameraZoom="15" />
 </LinearLayout>

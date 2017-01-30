@@ -3,10 +3,12 @@ package io.github.jamesdonoh.halfpricesushi;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -69,6 +71,7 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
             TextView dayNameView = new TextView(getContext());
             String dayName = new LocalDate().withDayOfWeek(day).dayOfWeek().getAsText();
             dayNameView.setText(dayName);
+            dayNameView.setPadding(0, 0, 40, 0);
 
             TextView openingTimes = new TextView(getContext());
             String timesStr = mOutlet.getOpeningTimesAsString(day);

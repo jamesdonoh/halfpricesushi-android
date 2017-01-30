@@ -17,6 +17,8 @@ public class Outlet {
 
     private final double latitude, longitude;
 
+    private int rating = 0;
+
     private SparseArray<OpeningTimes> openingTimes = new SparseArray<OpeningTimes>();
 
     Outlet(int id, String name, double latitude, double longitude) {
@@ -44,6 +46,22 @@ public class Outlet {
     /** The longitude of the location of the outlet */
     public double getLongitude() {
         return longitude;
+    }
+
+    public boolean isRated() {
+        return rating > 0;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
+        this.rating = rating;
     }
 
     // TODO DRY up the following methods

@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -81,6 +83,17 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
 
             gridLayout.addView(dayNameView);
             gridLayout.addView(openingTimes);
+        }
+
+        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Toast.makeText(getContext(), "Rating set to " + rating, Toast.LENGTH_SHORT).show();
+            }
+        });
+        if (mOutlet.isRated()) {
+            ratingBar.setRating((float) mOutlet.getRating());
         }
 
         return view;

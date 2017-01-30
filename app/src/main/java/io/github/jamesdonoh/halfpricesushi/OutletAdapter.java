@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
+import org.joda.time.DateTime;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -30,8 +32,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     private final Comparator<Outlet> CLOSING_TIME_ORDER = new Comparator<Outlet>() {
         @Override
         public int compare(Outlet o1, Outlet o2) {
+            DateTime now = new DateTime();
             // Integer.compare not available pre-1.7 but Double.compareTo has same effect
-            return Double.compare(o1.getMinsToClosingTime(), o2.getMinsToClosingTime());
+            return Double.compare(o1.getMinsToClosingTime(now), o2.getMinsToClosingTime(now));
         }
     };
 
@@ -91,8 +94,9 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         outletViewHolder.text2.setText(getFormattedDistanceToOutlet(outlet));
 
         int threshold = 31;
-        String closingInfo = outlet.getClosingTime();
-        int minsToClosingTime = outlet.getMinsToClosingTime();
+        DateTime now = new DateTime();
+        String closingInfo = outlet.getClosingTime(now.getDayOfWeek());
+        int minsToClosingTime = outlet.getMinsToClosingTime(now);
         if (minsToClosingTime < threshold)
             closingInfo = minsToClosingTime + "min";
         outletViewHolder.text3.setText(closingInfo);
@@ -139,12 +143,13 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
     }
 
     void filterOutlets() {
+        DateTime now = new DateTime();
         //Log.d(TAG, "filterOutlets called");
         // TODO make this non-destructive; what happens at midnight?
         // TODO optimise using notifyItemChanged/notifyItemRangeRemoved (not all change!)
         for (int i = sortedOutlets.size() - 1; i >= 0; i--) {
             Outlet outlet = sortedOutlets.get(i);
-            if (outlet.getMinsToClosingTime() <= 0)
+            if (outlet.getMinsToClosingTime(now) <= 0)
                 sortedOutlets.remove(i);
         }
 

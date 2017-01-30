@@ -103,14 +103,6 @@ public class Outlet {
         openingTimes.put(dayOfWeek, new OpeningTimes(parsedOpening, parsedClosing));
     }
 
-    private LocalTime getOpeningTime(int dayOfWeek) {
-        return openingTimes.get(dayOfWeek).opens;
-    }
-
-    private LocalTime getClosingTime(int dayOfWeek) {
-        return openingTimes.get(dayOfWeek).closes;
-    }
-
     private class OpeningTimes {
         private LocalTime opens;
         private LocalTime closes;

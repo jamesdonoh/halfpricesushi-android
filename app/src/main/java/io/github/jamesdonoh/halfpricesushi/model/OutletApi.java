@@ -8,9 +8,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.github.jamesdonoh.halfpricesushi.R;
@@ -79,11 +81,32 @@ public class OutletApi {
         addToQueue(jsonArrayRequest);
     }
 
-    public void setRating(int outletId, int rating) {
-        if (rating < 1 || rating > 5)
-            throw new IllegalArgumentException("Rating must be between 1 and 5");
+    void sendRating(Outlet outlet) {
+        String url = mBaseUrl + "/ratings/outlets/" + outlet.getId();
 
-        String url = mBaseUrl + "/ratings/outlet/" + outletId;
+        JSONObject payload = new JSONObject();
+        try {
+            payload.put("rating", outlet.getRating());
+        } catch (JSONException exception) {
+            // TODO handle this
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, payload,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "onResponse - error: " + error.toString(), error);
+                    }
+                }
+        );
+
+        addToQueue(jsonObjectRequest);
     }
 
     private void addToQueue(Request request) {

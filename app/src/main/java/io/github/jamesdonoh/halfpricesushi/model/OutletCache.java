@@ -50,6 +50,6 @@ public class OutletCache {
         OutletDatabaseHelper.getInstance(context).replaceRating(outlet);
 
         // Send rating to API
-        //OutletApi.getInstance(context).sendRating(outlet);
+        OutletApi.getInstance(context).sendRating(outlet);
     }
 }

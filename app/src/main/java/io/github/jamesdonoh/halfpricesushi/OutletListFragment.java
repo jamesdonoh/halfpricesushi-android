@@ -19,6 +19,8 @@ import android.widget.Toast;
 import io.github.jamesdonoh.halfpricesushi.model.OutletCache;
 
 public class OutletListFragment extends Fragment implements OutletAdapter.OnOutletClickListener {
+    private static final String TAG = OutletListFragment.class.getSimpleName();
+
     private final static String SELECTED_OUTLET_ID = "selectedOutlet";
 
     private final static int NONE = -1;
@@ -47,7 +49,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("OutletListFragment", "onCreate(" + (savedInstanceState != null ? "Bundle" : "") + ")");
+        Log.d(TAG, "onCreate(" + (savedInstanceState != null ? "Bundle" : "") + ")");
 
         // This fragment would like to participate in populating the options menu
         setHasOptionsMenu(true);
@@ -56,7 +58,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
 
         if (savedInstanceState != null) {
             mSelectedOutletId = savedInstanceState.getInt(SELECTED_OUTLET_ID);
-            Log.d("OutletListFragment", "onCreate: restored selected ID = " + mSelectedOutletId);
+            Log.d(TAG, "onCreate: restored selected ID = " + mSelectedOutletId);
         }
 
         mUpdateHandler = new Handler();
@@ -89,7 +91,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("OutletListFragment", "onCreateView(..., " + (savedInstanceState != null ? "Bundle" : "") + ")");
+        Log.d(TAG, "onCreateView(..., " + (savedInstanceState != null ? "Bundle" : "") + ")");
         View view = inflater.inflate(R.layout.fragment_outlet_list, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -108,11 +110,12 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("OutletListFragment", "onActivityCreated(" + (savedInstanceState != null ? "Bundle" : "") + ")");
+        Log.d(TAG, "onActivityCreated(" + (savedInstanceState != null ? "Bundle" : "") + ")");
 
         // As parent activity has been created it is now safe to determine if in dual-pane mode
         View detailsFrame = getActivity().findViewById(R.id.details);
         mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
+        Log.d(TAG, "mDualPane = " + mDualPane);
 
         if (mDualPane && mSelectedOutletId != NONE) {
             showOutletDetails(mSelectedOutletId);
@@ -122,7 +125,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d("OutletListFragment", "onSaveInstanceState: persisting selected ID = " + mSelectedOutletId);
+        Log.d(TAG, "onSaveInstanceState: persisting selected ID = " + mSelectedOutletId);
         outState.putInt(SELECTED_OUTLET_ID, mSelectedOutletId);
     }
 
@@ -158,7 +161,7 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         if (mDualPane) {
             OutletDetailsFragment details = (OutletDetailsFragment)
                     getFragmentManager().findFragmentById(R.id.details);
-            Log.d("OutletListFragment", "showOutletDetails: details = " + details);
+            Log.d(TAG, "showOutletDetails: details = " + details);
 
             if (details == null || details.getShownOutletId() != outletId) {
                 if (details != null) {

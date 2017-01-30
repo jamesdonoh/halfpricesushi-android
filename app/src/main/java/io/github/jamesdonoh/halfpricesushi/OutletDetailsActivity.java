@@ -1,6 +1,5 @@
 package io.github.jamesdonoh.halfpricesushi;
 
-import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,11 +8,6 @@ public class OutletDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getResources().getConfiguration().orientation  == Configuration.ORIENTATION_LANDSCAPE) {
-            finish();
-            return;
-        }
 
         setContentView(R.layout.activity_outlet_details);
 

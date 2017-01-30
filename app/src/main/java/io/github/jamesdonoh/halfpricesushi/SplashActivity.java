@@ -24,6 +24,7 @@ public class SplashActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         mApi = OutletApi.getInstance(this);
+        // TODO if cached data already exists this should not block loading next activity
         requestApiData();
     }
 

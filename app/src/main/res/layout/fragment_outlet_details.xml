@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
         android:paddingTop="4dp"
-        android:paddingBottom="4dp"
         style="@style/TextAppearance.AppCompat.Large" />
 
     <GridLayout
@@ -30,7 +29,15 @@
             android:layout_height="wrap_content"
             android:rowCount="7"
             android:columnCount="2"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
     </GridLayout>
 
+    <RatingBar
+        android:id="@+id/rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        style="@style/OutletRatingBar"/>
 </LinearLayout>

@@ -89,7 +89,12 @@ public class OutletDetailsFragment extends Fragment implements OnMapReadyCallbac
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Toast.makeText(getContext(), "Rating set to " + rating, Toast.LENGTH_SHORT).show();
+                if (fromUser && rating != mOutlet.getRating()) {
+                    //Toast.makeText(getContext(), "Rating set to " + rating, Toast.LENGTH_SHORT).show();
+
+                    mOutlet.setRating((int) rating); // NB discard any fractional part
+                    OutletCache.storeOutletRating(getContext(), mOutlet);
+                }
             }
         });
         if (mOutlet.isRated()) {

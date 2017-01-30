@@ -39,7 +39,12 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
         static final String COLUMN_NAME_TIMES_SUN = "times_sun";
     }
 
-    private static final String SQL_CREATE_ENTRIES =
+    private static class RatingEntry implements BaseColumns {
+        static final String TABLE_NAME = "rating";
+        static final String COLUMN_NAME_RATING = "rating";
+    }
+
+    private static final String SQL_CREATE_TABLE_OUTLET =
             "CREATE TABLE " + OutletEntry.TABLE_NAME + " (" +
                     OutletEntry._ID + " INTEGER PRIMARY KEY, " +
                     OutletEntry.COLUMN_NAME_NAME + " TEXT, " +
@@ -53,7 +58,12 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
                     OutletEntry.COLUMN_NAME_TIMES_SAT + " TEXT, " +
                     OutletEntry.COLUMN_NAME_TIMES_SUN + " TEXT)";
 
-    private static final String SQL_DELETE_ENTRIES =
+    private static final String SQL_CREATE_TABLE_RATING =
+            "CREATE TABLE " + RatingEntry.TABLE_NAME + " (" +
+                    RatingEntry._ID + " INTEGER PRIMARY KEY, " +
+                    RatingEntry.COLUMN_NAME_RATING + " INTEGER)";
+
+    private static final String SQL_DROP_TABLE_OUTLET =
             "DROP TABLE IF EXISTS " + OutletEntry.TABLE_NAME;
 
     private Context mContext;
@@ -78,17 +88,20 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.i(TAG, "Creating database " + DATABASE_NAME);
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_TABLE_OUTLET);
+        db.execSQL(SQL_CREATE_TABLE_RATING);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(TAG, "Upgrading database " + DATABASE_NAME + " to v" + newVersion);
 
-        // This database is only a cache for online data, so its upgrade policy is
+        // The outlet table is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
-        onCreate(db);
+        db.execSQL(SQL_DROP_TABLE_OUTLET);
+        db.execSQL(SQL_CREATE_TABLE_OUTLET);
+
+        // However, ratings data should persist across database upgrades
     }
 
     // TODO: Should this live in a separate class (to hide SQLLiteOpenHelper interface)?
@@ -99,22 +112,14 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
         // TODO: Make async? Should not be called from main thread according to https://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] projection = {
-            OutletEntry._ID,
-            OutletEntry.COLUMN_NAME_NAME,
-            OutletEntry.COLUMN_NAME_LONGITUDE,
-            OutletEntry.COLUMN_NAME_LATITUDE,
-            OutletEntry.COLUMN_NAME_TIMES_MON,
-            OutletEntry.COLUMN_NAME_TIMES_TUE,
-            OutletEntry.COLUMN_NAME_TIMES_WED,
-            OutletEntry.COLUMN_NAME_TIMES_THU,
-            OutletEntry.COLUMN_NAME_TIMES_FRI,
-            OutletEntry.COLUMN_NAME_TIMES_SAT,
-            OutletEntry.COLUMN_NAME_TIMES_SUN
-        };
+        String sql = "SELECT " + OutletEntry.TABLE_NAME + ".*, " + RatingEntry.COLUMN_NAME_RATING +
+                " FROM " + OutletEntry.TABLE_NAME +
+                " LEFT JOIN " + RatingEntry.TABLE_NAME + " ON " +
+                OutletEntry.TABLE_NAME + "." + OutletEntry._ID + " = " +
+                RatingEntry.TABLE_NAME + "." + RatingEntry._ID;
 
         // TODO: What about error handling?
-        Cursor cursor = db.query(OutletEntry.TABLE_NAME, projection, null, null, null, null, null, null);
+        Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             int outletId = cursor.getInt(cursor.getColumnIndexOrThrow(OutletEntry._ID));
             String outletName = cursor.getString(cursor.getColumnIndexOrThrow(OutletEntry.COLUMN_NAME_NAME));
@@ -142,6 +147,9 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
                 }
             }
 
+            int rating = cursor.getInt(cursor.getColumnIndexOrThrow(RatingEntry.COLUMN_NAME_RATING));
+            outlet.setRating(rating);
+
             outlets.add(outlet);
         }
         cursor.close();
@@ -162,6 +170,22 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
 
         for (Outlet outlet : OutletJsonLoader.fromJsonArray(jsonArray)) {
             insertOutlet(db, outlet);
+        }
+    }
+
+    void replaceRating(Outlet outlet) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction(); // Note: uses EXCLUSIVE mode
+        try {
+            ContentValues values = new ContentValues();
+            values.put(RatingEntry._ID, outlet.getId());
+            values.put(RatingEntry.COLUMN_NAME_RATING, outlet.getRating());
+
+            db.replaceOrThrow(RatingEntry.TABLE_NAME, null, values);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 

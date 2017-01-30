@@ -1,6 +1,7 @@
 package io.github.jamesdonoh.halfpricesushi.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 
@@ -12,6 +13,8 @@ import java.util.List;
  * TODO: rename class, confusing name?
  */
 public class OutletCache {
+    private static final String TAG = OutletCache.class.getSimpleName();
+
     private static List<Outlet> outlets = null;
 
     public static List<Outlet> getAllOutlets(Context context) {
@@ -23,6 +26,7 @@ public class OutletCache {
     }
 
     public static Outlet getOutletById(Context context, int outletId) {
+        Log.d(TAG, "getOutletById(" + outletId + ")");
         // TODO replace with more efficient implementation
         for (Outlet outlet : getAllOutlets(context)) {
             if (outlet.getId() == outletId) {
@@ -39,5 +43,13 @@ public class OutletCache {
 
     public static void updateOutletData(Context context, JSONArray jsonArray) {
         OutletDatabaseHelper.getInstance(context).updateOutletData(jsonArray);
+    }
+
+    public static void storeOutletRating(Context context, Outlet outlet) {
+        // Store rating in local database
+        OutletDatabaseHelper.getInstance(context).replaceRating(outlet);
+
+        // Send rating to API
+        //OutletApi.getInstance(context).sendRating(outlet);
     }
 }

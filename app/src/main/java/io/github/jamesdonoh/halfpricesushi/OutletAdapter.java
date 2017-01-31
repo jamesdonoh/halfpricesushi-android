@@ -48,18 +48,16 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
         }
     };
 
-    // TODO: move the sorting stuff somewhere else?
+    // TODO: move the sorting behaviour into a separate class?
     private Comparator<Outlet> mSortOrder = CLOSING_TIME_ORDER;
 
     private final OnOutletClickListener clickListener;
 
     private int selectedOutletPosition = RecyclerView.NO_POSITION;
 
-    // FIXME Do we need to store this state here as well as in OutletFinderActivity?
-    // FIXME default should not be Oxford Circus!
+    // NB default location is Oxford Circus for testing purposes
     private LatLng mCurrentLatLng = new LatLng(51.515514, -0.141864);
 
-    // TODO get rid of this
     private int mNumUpdates;
 
     OutletAdapter(List<Outlet> outletList, OnOutletClickListener clickListener) {
@@ -138,14 +136,11 @@ class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.OutletViewHolder>
                 + " (" + ++mNumUpdates + " updates so far)");
 
         // TODO make this more efficient rather than invalidating everything?
-        // TODO only do this if we're actually visible?
         sortOutlets();
     }
 
     void filterOutlets() {
         DateTime now = new DateTime();
-        //Log.d(TAG, "filterOutlets called");
-        // TODO make this non-destructive; what happens at midnight?
         // TODO optimise using notifyItemChanged/notifyItemRangeRemoved (not all change!)
         for (int i = sortedOutlets.size() - 1; i >= 0; i--) {
             Outlet outlet = sortedOutlets.get(i);

@@ -18,7 +18,7 @@ import java.util.List;
 class OutletDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
-    // TODO deal with warning (see below)
+    // TODO address linter with warning (see also below)
     private static OutletDatabaseHelper sInstance;
 
     private static final int DATABASE_VERSION = 1;
@@ -66,8 +66,6 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DROP_TABLE_OUTLET =
             "DROP TABLE IF EXISTS " + OutletEntry.TABLE_NAME;
 
-    private Context mContext;
-
     // NB singleton pattern to ensure only a single database connection per app
     static synchronized OutletDatabaseHelper getInstance(Context context) {
         if (sInstance == null) {
@@ -80,7 +78,6 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
 
     private OutletDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mContext = context; // can be deleted once OutletJsonLoader is no longer used
 
         Log.i(TAG, "Instance created");
     }
@@ -109,7 +106,7 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
         Log.i(TAG, "getAllOutlets called");
         List<Outlet> outlets = new ArrayList<>();
 
-        // TODO: Make async? Should not be called from main thread according to https://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()
+        // TODO: Make async? See https://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()
         SQLiteDatabase db = getReadableDatabase();
 
         String sql = "SELECT " + OutletEntry.TABLE_NAME + ".*, " + RatingEntry.COLUMN_NAME_RATING +
@@ -118,7 +115,6 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
                 OutletEntry.TABLE_NAME + "." + OutletEntry._ID + " = " +
                 RatingEntry.TABLE_NAME + "." + RatingEntry._ID;
 
-        // TODO: What about error handling?
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             int outletId = cursor.getInt(cursor.getColumnIndexOrThrow(OutletEntry._ID));
@@ -129,7 +125,6 @@ class OutletDatabaseHelper extends SQLiteOpenHelper {
 
             Outlet outlet = new Outlet(outletId, outletName, latitude, longitude);
 
-            // FIXME urgh
             String[] columnNames = new String[] {
                     OutletEntry.COLUMN_NAME_TIMES_MON,
                     OutletEntry.COLUMN_NAME_TIMES_TUE,

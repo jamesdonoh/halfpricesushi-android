@@ -19,7 +19,7 @@ public class OutletJsonLoader {
                 Outlet outlet = parseJsonOutlet(jsonArray.getJSONObject(i));
                 outletList.add(outlet);
             } catch (JSONException je) {
-                // TODO add better handling
+                // TODO add better error handling
                 je.printStackTrace();
             }
         }
@@ -35,7 +35,6 @@ public class OutletJsonLoader {
         double latitude = location.getDouble("lat");
         double longitude = location.getDouble("long");
 
-        // TODO make this nicer
         Outlet outlet = new Outlet(id, name, latitude, longitude);
 
         JSONObject times = data.getJSONObject("times");

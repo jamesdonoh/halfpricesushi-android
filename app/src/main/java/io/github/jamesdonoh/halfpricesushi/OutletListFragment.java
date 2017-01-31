@@ -80,14 +80,6 @@ public class OutletListFragment extends Fragment implements OutletAdapter.OnOutl
         mUpdateHandler.removeCallbacks(mUpdateChecker);
     }
 
-    private void startUpdateHandler() {
-
-    }
-
-    private void stopUpdateHandler() {
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

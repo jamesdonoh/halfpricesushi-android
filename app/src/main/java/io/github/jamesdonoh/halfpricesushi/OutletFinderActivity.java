@@ -3,6 +3,7 @@ package io.github.jamesdonoh.halfpricesushi;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,9 +17,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
-
-// TODO improve obvious copy-paste from https://developers.google.com/maps/documentation/android-api/current-places-tutorial
 
 public class OutletFinderActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -29,24 +27,19 @@ public class OutletFinderActivity extends AppCompatActivity implements
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    // The fastest rate for active location updates. Exact. Updates will never be more frequent
-    // than this value.
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
-    // Keys for storing activity state.
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+
     private static final String KEY_LOCATION = "location";
 
     private OutletFragmentPagerAdapter mPagerAdapter;
 
     private boolean mLocationPermissionGranted = false;
 
-    // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     private GoogleApiClient mGoogleApiClient;
-    // A request object to store parameters for requests to the FusedLocationProviderApi.
+
     private LocationRequest mLocationRequest;
 
-    // The geographical location where the device is currently located.
     private Location mCurrentLocation;
 
     @Override
@@ -114,7 +107,7 @@ public class OutletFinderActivity extends AppCompatActivity implements
      * Handles failure to connect to the Google Play services client.
      */
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
         // Refer to the reference doc for ConnectionResult to see what error codes might
         // be returned in onConnectionFailed.
         Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "
@@ -137,7 +130,6 @@ public class OutletFinderActivity extends AppCompatActivity implements
         Log.d(TAG, "onLocationChanged: " + location.getLatitude() + "," + location.getLongitude());
         mCurrentLocation = location;
 
-        // TODO BAD don't use a static index here
         OutletListFragment listFragment = (OutletListFragment) mPagerAdapter.getRegisteredFragment(0);
         listFragment.onLocationChanged(location);
     }
@@ -223,8 +215,8 @@ public class OutletFinderActivity extends AppCompatActivity implements
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[],
-                                           int[] grantResults) {
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
                 && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -238,7 +230,6 @@ public class OutletFinderActivity extends AppCompatActivity implements
     private void setLocationPermissionGranted() {
         mLocationPermissionGranted = true;
 
-        // TODO don't use a fixed index here
         OutletMapFragment mapFragment = (OutletMapFragment) mPagerAdapter.getRegisteredFragment(1);
         mapFragment.onLocationPermissionGranted();
     }

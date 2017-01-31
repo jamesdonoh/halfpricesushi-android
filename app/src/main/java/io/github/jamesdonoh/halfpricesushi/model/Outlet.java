@@ -48,6 +48,7 @@ public class Outlet {
         return longitude;
     }
 
+    /** Retuns whether the outlet has been rated or not */
     public boolean isRated() {
         return rating > 0;
     }
@@ -62,7 +63,7 @@ public class Outlet {
 
     // TODO DRY up the following methods
 
-    /** String representation about the opening times of the outlet on the specified day */
+    /** Returns a String representation about the opening times of the outlet on the specified day */
     public String getOpeningTimesAsString(int dayOfWeek) {
         OpeningTimes times = openingTimes.get(dayOfWeek);
         if (times == null)

@@ -5,6 +5,6 @@
         android:id="@+id/toggle_sort"
         android:icon="@android:drawable/ic_menu_sort_alphabetically"
         app:showAsAction="ifRoom"
-        android:title="Toggle sort order">
+        android:title="@string/sort">
     </item>
 </menu>

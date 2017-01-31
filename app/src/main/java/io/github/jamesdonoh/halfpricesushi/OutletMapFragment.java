@@ -46,7 +46,6 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher);
 
         for (Outlet outlet : OutletCache.getAllOutlets(getContext())) {
-            // sushi = "\ud83c\udf63";
             LatLng position = new LatLng(outlet.getLatitude(), outlet.getLongitude());
             mMap.addMarker(new MarkerOptions()
                     .position(position)
@@ -75,15 +74,4 @@ public class OutletMapFragment extends Fragment implements OnMapReadyCallback, G
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
-
-    /*
-    @Override
-    public boolean onMyLocationButtonClick() {
-        // TODO this is just a a copy-paste - maybe remove if we don't need custom behaviour
-        Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
-    */
 }

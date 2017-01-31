@@ -5,12 +5,10 @@ import android.util.Log;
 
 import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Data access layer that provides caching and hides database implementation.
- * TODO: rename class, confusing name?
  */
 public class OutletCache {
     private static final String TAG = OutletCache.class.getSimpleName();
@@ -27,7 +25,7 @@ public class OutletCache {
 
     public static Outlet getOutletById(Context context, int outletId) {
         Log.d(TAG, "getOutletById(" + outletId + ")");
-        // TODO replace with more efficient implementation
+        // TODO replace simple implementation with with more efficient version
         for (Outlet outlet : getAllOutlets(context)) {
             if (outlet.getId() == outletId) {
                 return outlet;
